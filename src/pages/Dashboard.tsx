@@ -1,4 +1,5 @@
-import { Box, Group, ScrollArea, Skeleton } from '@mantine/core'
+import { Box, Group, Skeleton } from '@mantine/core'
+import { EventsSection } from '../features/events/EventsSection'
 
 export function Dashboard() {
   return (
@@ -6,11 +7,7 @@ export function Dashboard() {
       <Box flex={2} bg="gray.1" style={{ borderRadius: 8 }} p="md">
         <Skeleton height="100%" />
       </Box>
-      <ScrollArea flex={1} h="100%">
-        <Skeleton height={88} mb="sm" />
-        <Skeleton height={88} mb="sm" />
-        <Skeleton height={88} />
-      </ScrollArea>
+      <EventsSection />
     </Group>
   )
 }
