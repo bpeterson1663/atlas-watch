@@ -23,7 +23,6 @@ export function useEvents(): EventsState {
     async function loadEvents() {
       try {
         const { events } = await getEvents(controller.signal)
-        debugger
 
         setState({ message: '', events, status: 'success' })
       } catch (err) {

@@ -9,6 +9,8 @@ export function normalizeEvent(event: EonetEvent): EventView {
   const comma = event.title.indexOf(',')
   const fromTitle = comma !== -1 ? event.title.slice(comma + 1).trim() : ''
 
+  const point = pointFromGeometry(last)
+
   return {
     id: event.id,
     title: event.title,
@@ -16,6 +18,8 @@ export function normalizeEvent(event: EonetEvent): EventView {
     categoryTitle: event.categories[0]?.title ?? 'Unknown',
     isOpen: event.closed == null,
     lastDate: last?.date ?? '',
+    lastLat: point?.lat ?? null,
+    lastLng: point?.lng ?? null,
     locationLabel:
       fromTitle || formatCoordinates(last) || 'Location unavailable',
   }

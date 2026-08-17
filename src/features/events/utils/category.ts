@@ -1,7 +1,7 @@
 import {
   IconDroplet,
   IconFlame,
-  IconIceCream,
+  IconIceberg,
   IconMountain,
   IconTornado,
   IconWorld,
@@ -10,16 +10,16 @@ import {
 export function categoryStyle(categoryId: string) {
   switch (categoryId) {
     case 'wildfires':
-      return { color: 'wildfire', icon: IconFlame }
+      return { color: 'wildfire', hex: '#fd7e14', icon: IconFlame }
     case 'severeStorms':
-      return { color: 'storm', icon: IconTornado }
+      return { color: 'storm', hex: '#228be6', icon: IconTornado }
     case 'volcanoes':
-      return { color: 'volcano', icon: IconMountain }
+      return { color: 'volcano', hex: '#7950f2', icon: IconMountain }
     case 'floods':
-      return { color: 'flood', icon: IconDroplet }
+      return { color: 'flood', hex: '#12b886', icon: IconDroplet }
     case 'seaLakeIce':
-      return { color: 'navy', icon: IconIceCream }
+      return { color: 'navy', hex: '#1b365d', icon: IconIceberg }
     default:
-      return { color: 'navy', icon: IconWorld }
+      return { color: 'navy', hex: '#1b365d', icon: IconWorld }
   }
 }

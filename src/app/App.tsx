@@ -4,6 +4,7 @@ import { MantineProvider } from '@mantine/core'
 import { theme } from '../styles/theme'
 
 import '@mantine/core/styles.css'
+import 'leaflet/dist/leaflet.css'
 
 function App() {
   return (

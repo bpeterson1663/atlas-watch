@@ -26,4 +26,6 @@ export interface EventView {
   isOpen: boolean
   lastDate: string
   locationLabel: string
+  lastLat: number | null
+  lastLng: number | null
 }
