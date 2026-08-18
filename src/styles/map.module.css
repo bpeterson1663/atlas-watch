@@ -1,0 +1,46 @@
+.shell {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.container {
+  height: 100%;
+  width: 100%;
+}
+
+.legend {
+  position: absolute;
+  left: var(--mantine-spacing-sm);
+  bottom: var(--mantine-spacing-sm);
+  z-index: 1000;
+}
+
+.legendRow {
+  display: flex;
+  gap: var(--mantine-spacing-xs);
+  align-items: center;
+}
+
+.legendDot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--mantine-radius-xl);
+  flex-shrink: 0;
+}
+
+.legendDotLatest {
+  background: var(--mantine-color-green-6);
+}
+
+.legendDotMid {
+  background: var(--mantine-color-yellow-5);
+}
+
+.legendDotEarlier {
+  background: var(--mantine-color-orange-5);
+}
+
+.legendDotEarliest {
+  background: var(--mantine-color-red-6);
+}

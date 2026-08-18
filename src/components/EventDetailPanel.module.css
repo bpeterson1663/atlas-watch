@@ -1,0 +1,16 @@
+.historyDot {
+  width: 10px;
+  height: 10px;
+  margin-top: 6px;
+  border-radius: var(--mantine-radius-xl);
+  flex-shrink: 0;
+}
+
+.headerContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.historyContent {
+  min-width: 0;
+}

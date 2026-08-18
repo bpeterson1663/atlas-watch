@@ -18,6 +18,7 @@ import {
   locatedObservations,
   observationColor,
 } from '../lib/observation'
+import mapClasses from '../styles/map.module.css'
 
 interface Props {
   observations: EventObservation[]
@@ -36,11 +37,11 @@ export function EventTrackMap({ observations, categoryId }: Props) {
   const boundsPoints = [...trackLatLngs, ...polygonLatLngs]
 
   return (
-    <div style={{ position: 'relative', height: '100%', width: '100%' }}>
+    <div className={mapClasses.shell}>
       <MapContainer
         center={boundsPoints[0] ?? [20, 0]}
         zoom={boundsPoints.length === 1 ? 4 : 2}
-        style={{ height: '100%', width: '100%' }}
+        className={mapClasses.container}
         scrollWheelZoom
       >
         <TileLayer
@@ -70,7 +71,11 @@ export function EventTrackMap({ observations, categoryId }: Props) {
         {trackLatLngs.length > 1 && (
           <Polyline
             positions={trackLatLngs}
-            pathOptions={{ color: '#1b365d', weight: 2, opacity: 0.7 }}
+            pathOptions={{
+              color: 'var(--mantine-color-navy-6)',
+              weight: 2,
+              opacity: 0.7,
+            }}
           />
         )}
         {trackPoints.map((point, index) => {
@@ -86,7 +91,7 @@ export function EventTrackMap({ observations, categoryId }: Props) {
               center={[point.lat, point.lng]}
               radius={isLatest ? 9 : 6}
               pathOptions={{
-                color: isLatest ? '#1b365d' : color,
+                color: isLatest ? 'var(--mantine-color-navy-6)' : color,
                 fillColor: color,
                 fillOpacity: 0.95,
                 weight: isLatest ? 3 : 1,
@@ -113,40 +118,40 @@ export function EventTrackMap({ observations, categoryId }: Props) {
 }
 
 function FitBounds({ points }: { points: [number, number][] }) {
-  const map = useMap()
+  const leafletMap = useMap()
   const pointsKey = points.map((point) => point.join(',')).join('|')
 
   useEffect(() => {
     function fit() {
-      const size = map.getSize()
+      const size = leafletMap.getSize()
       if (size.x === 0 || size.y === 0 || points.length === 0) {
         return false
       }
 
       if (points.length === 1) {
-        map.setView(points[0], 4)
+        leafletMap.setView(points[0], 4)
         return true
       }
 
-      map.fitBounds(points, { padding: [28, 28], maxZoom: 8 })
+      leafletMap.fitBounds(points, { padding: [28, 28], maxZoom: 8 })
       return true
     }
 
-    map.invalidateSize()
+    leafletMap.invalidateSize()
 
     if (fit()) {
       return
     }
 
     const retry = window.setTimeout(() => {
-      map.invalidateSize()
+      leafletMap.invalidateSize()
       fit()
     }, 100)
 
     return () => {
       window.clearTimeout(retry)
     }
-  }, [map, pointsKey])
+  }, [leafletMap, pointsKey])
 
   return null
 }
@@ -159,26 +164,19 @@ function ObservationLegend({
   lastDate: string
 }) {
   return (
-    <Paper
-      shadow="sm"
-      p="xs"
-      radius="md"
-      style={{
-        position: 'absolute',
-        left: 12,
-        bottom: 12,
-        zIndex: 1000,
-      }}
-    >
+    <Paper shadow="sm" p="xs" radius="md" className={mapClasses.legend}>
       <Text size="xs" fw={700} mb={6}>
         Observation history
       </Text>
       <Stack gap={4}>
-        <LegendRow color="#40c057" label={`Latest (${formatUtc(lastDate)})`} />
-        <LegendRow color="#fab005" label="Mid track" />
-        <LegendRow color="#fd7e14" label="Earlier" />
         <LegendRow
-          color="#fa5252"
+          dotClass={mapClasses.legendDotLatest}
+          label={`Latest (${formatUtc(lastDate)})`}
+        />
+        <LegendRow dotClass={mapClasses.legendDotMid} label="Mid track" />
+        <LegendRow dotClass={mapClasses.legendDotEarlier} label="Earlier" />
+        <LegendRow
+          dotClass={mapClasses.legendDotEarliest}
           label={`Earliest (${formatUtc(firstDate)})`}
         />
       </Stack>
@@ -186,22 +184,10 @@ function ObservationLegend({
   )
 }
 
-function LegendRow({ color, label }: { color: string; label: string }) {
+function LegendRow({ dotClass, label }: { dotClass: string; label: string }) {
   return (
-    <Text
-      size="xs"
-      component="div"
-      style={{ display: 'flex', gap: 8, alignItems: 'center' }}
-    >
-      <span
-        style={{
-          width: 10,
-          height: 10,
-          borderRadius: 999,
-          background: color,
-          flexShrink: 0,
-        }}
-      />
+    <Text size="xs" component="div" className={mapClasses.legendRow}>
+      <span className={`${mapClasses.legendDot} ${dotClass}`} />
       {label}
     </Text>
   )

@@ -12,6 +12,7 @@ import { categoryStyle } from '../lib/category'
 import { IconCalendar, IconMapPin } from '@tabler/icons-react'
 import { formatUtc } from '../lib/date'
 import { Link, useLocation } from 'react-router-dom'
+import classes from './EventCard.module.css'
 
 interface Props {
   event: EventView
@@ -28,17 +29,15 @@ export function EventCard({ event, selected = false, onSelect }: Props) {
       withBorder
       padding="sm"
       radius="md"
-      style={{
-        cursor: onSelect ? 'pointer' : 'default',
-        borderColor: selected ? `var(--mantine-color-${color}-5)` : undefined,
-      }}
+      className={onSelect ? classes.clickable : undefined}
+      bd={selected ? `1px solid var(--mantine-color-${color}-5)` : undefined}
       onClick={() => onSelect?.(event.id)}
     >
       <ThemeIcon size={44} radius="md" color={color} variant="filled">
         <Icon size={22} />
       </ThemeIcon>
 
-      <Stack gap={4} style={{ flex: 1, minWidth: 0 }}>
+      <Stack gap={4} className={classes.content}>
         <Group justify="space-between" wrap="nowrap" align="flex-start">
           <Text fw={600} lineClamp={2}>
             {event.title}
@@ -58,7 +57,7 @@ export function EventCard({ event, selected = false, onSelect }: Props) {
           </Text>
         </Group>
         <Group justify="space-between" wrap="nowrap" align="flex-end">
-          <Group gap={6} wrap="nowrap" style={{ minWidth: 0 }}>
+          <Group gap={6} wrap="nowrap" className={classes.location}>
             <IconMapPin size={14} color="gray" />
             <Text size="xs" c="dimmed" lineClamp={1}>
               {event.locationLabel}

@@ -1,5 +1,6 @@
 import { Box } from '@mantine/core'
 import type { ReactNode } from 'react'
+import classes from './MapPane.module.css'
 
 interface Props {
   children: ReactNode
@@ -11,15 +12,10 @@ export function MapPane({ children, fixedHeight }: Props) {
 
   return (
     <Box
+      className={`${classes.root}${isFixed ? ` ${classes.fixed}` : ''}`}
       flex={isFixed ? undefined : 2}
       h={isFixed ? fixedHeight : '100%'}
-      style={{
-        borderRadius: 8,
-        overflow: 'hidden',
-        flexShrink: isFixed ? 0 : undefined,
-        minHeight: isFixed ? fixedHeight : 0,
-        border: '1px solid var(--mantine-color-gray-3)',
-      }}
+      mih={isFixed ? fixedHeight : 0}
     >
       {children}
     </Box>

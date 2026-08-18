@@ -1,0 +1,12 @@
+.clickable {
+  cursor: pointer;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+.location {
+  min-width: 0;
+}

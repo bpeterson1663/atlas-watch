@@ -1,0 +1,21 @@
+.flexMinHeight0 {
+  min-height: 0;
+}
+
+.flexGrowMinWidth0 {
+  flex: 1;
+  min-width: 0;
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 200px;
+}
+
+.noWrap {
+  white-space: nowrap;
+}
+
+.shrink0 {
+  flex-shrink: 0;
+}

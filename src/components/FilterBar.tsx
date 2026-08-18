@@ -11,6 +11,7 @@ import {
 import { IconSearch, IconWorld } from '@tabler/icons-react'
 import type { Category } from '../types/category'
 import type { DaysFilter, EventFilters, StatusFilter } from '../types/filter'
+import layout from '../styles/layout.module.css'
 
 interface Props {
   categories: Category[]
@@ -39,11 +40,11 @@ export function FilterBar({
       <Stack gap="sm">
         <Group align="flex-end" wrap="wrap" gap="sm">
           <TextInput
+            className={layout.searchInput}
             placeholder="Search events or locations..."
             leftSection={<IconSearch size={16} />}
             value={filters.q}
             onChange={(event) => onChange({ q: event.currentTarget.value })}
-            style={{ flex: 1, minWidth: 200 }}
           />
 
           <Group gap="xs" wrap="nowrap">
@@ -106,7 +107,7 @@ export function FilterBar({
           {eventsLoading ? (
             <Skeleton height={20} width={80} />
           ) : (
-            <Text size="sm" fw={600} c="navy" style={{ whiteSpace: 'nowrap' }}>
+            <Text size="sm" fw={600} c="navy" className={layout.noWrap}>
               {eventCount ?? '—'} events
             </Text>
           )}

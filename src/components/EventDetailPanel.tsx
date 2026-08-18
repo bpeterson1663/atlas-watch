@@ -1,5 +1,6 @@
 import {
   Anchor,
+  Box,
   Badge,
   Group,
   Paper,
@@ -14,6 +15,7 @@ import type { EventDetailView, EventObservation } from '../types/event'
 import { categoryStyle } from '../lib/category'
 import { formatUtc } from '../lib/date'
 import { formatLatLng, observationColor } from '../lib/observation'
+import classes from './EventDetailPanel.module.css'
 
 interface Props {
   event: EventDetailView
@@ -29,7 +31,7 @@ export function EventDetailPanel({ event }: Props) {
           <ThemeIcon size={44} radius="md" color={color} variant="filled">
             <Icon size={22} />
           </ThemeIcon>
-          <Stack gap={6} style={{ flex: 1, minWidth: 0 }}>
+          <Stack gap={6} className={classes.headerContent}>
             <Group justify="space-between" wrap="nowrap" align="flex-start">
               <Title order={3} lh={1.2}>
                 {event.title}
@@ -125,17 +127,8 @@ function HistoryList({ observations }: { observations: EventObservation[] }) {
             wrap="nowrap"
             align="flex-start"
           >
-            <span
-              style={{
-                width: 10,
-                height: 10,
-                marginTop: 6,
-                borderRadius: 999,
-                background: color,
-                flexShrink: 0,
-              }}
-            />
-            <Stack gap={2} style={{ minWidth: 0 }}>
+            <Box className={classes.historyDot} bg={color} />
+            <Stack gap={2} className={classes.historyContent}>
               <Text size="sm" fw={500}>
                 {formatUtc(observation.date)}
               </Text>

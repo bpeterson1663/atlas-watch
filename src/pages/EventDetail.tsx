@@ -33,13 +33,7 @@ export function EventDetail() {
     return (
       <DetailLayout backTo={backTo} isDesktop={isDesktop}>
         {isDesktop ? (
-          <Group
-            align="stretch"
-            grow
-            wrap="nowrap"
-            flex={1}
-            style={{ minHeight: 0 }}
-          >
+          <Group align="stretch" grow wrap="nowrap" flex={1} mih={0}>
             <Skeleton
               height="100%"
               mih={MOBILE_MAP_HEIGHT}
@@ -54,7 +48,7 @@ export function EventDetail() {
             />
           </Group>
         ) : (
-          <Stack gap="md" flex={1} style={{ minHeight: 0 }}>
+          <Stack gap="md" flex={1} mih={0}>
             <Skeleton height={MOBILE_MAP_HEIGHT} radius="md" />
             <Skeleton height={240} radius="md" />
           </Stack>
@@ -91,22 +85,16 @@ export function EventDetail() {
   return (
     <DetailLayout backTo={backTo} isDesktop={isDesktop}>
       {isDesktop ? (
-        <Group
-          align="stretch"
-          grow
-          wrap="nowrap"
-          flex={1}
-          style={{ minHeight: 0 }}
-        >
+        <Group align="stretch" grow wrap="nowrap" flex={1} mih={0}>
           <MapPane>{mapContent}</MapPane>
           <ScrollArea flex={1} h="100%" type="hover">
             <EventDetailPanel event={view} />
           </ScrollArea>
         </Group>
       ) : (
-        <Stack gap="md" flex={1} style={{ minHeight: 0 }}>
+        <Stack gap="md" flex={1} mih={0}>
           <MapPane fixedHeight={MOBILE_MAP_HEIGHT}>{mapContent}</MapPane>
-          <ScrollArea flex={1} style={{ minHeight: 240 }} type="hover">
+          <ScrollArea flex={1} mih={240} type="hover">
             <EventDetailPanel event={view} />
           </ScrollArea>
         </Stack>
@@ -129,7 +117,7 @@ function DetailLayout({
       gap="md"
       flex={1}
       h={isDesktop ? 'calc(100vh - 104px)' : 'auto'}
-      style={{ minHeight: 0 }}
+      mih={0}
     >
       <BackLink to={backTo} />
       {children}

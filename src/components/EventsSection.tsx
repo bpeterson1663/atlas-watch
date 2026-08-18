@@ -72,13 +72,7 @@ export function EventsSection({ filters, events, status, message }: Props) {
 
   if (isDesktop) {
     return (
-      <Group
-        align="stretch"
-        grow
-        wrap="nowrap"
-        flex={1}
-        style={{ minHeight: 0 }}
-      >
+      <Group align="stretch" grow wrap="nowrap" flex={1} mih={0}>
         <MapPane>{mapContent}</MapPane>
         <ScrollArea flex={1} h="100%" type="hover">
           {listContent}
@@ -88,9 +82,9 @@ export function EventsSection({ filters, events, status, message }: Props) {
   }
 
   return (
-    <Stack gap="md" flex={1} style={{ minHeight: 0 }}>
+    <Stack gap="md" flex={1} mih={0}>
       <MapPane fixedHeight={MOBILE_MAP_HEIGHT}>{mapContent}</MapPane>
-      <ScrollArea flex={1} style={{ minHeight: 240 }} type="hover">
+      <ScrollArea flex={1} mih={240} type="hover">
         {listContent}
       </ScrollArea>
     </Stack>
