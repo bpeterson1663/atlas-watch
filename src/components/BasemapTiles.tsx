@@ -1,4 +1,5 @@
 import { TileLayer } from 'react-leaflet'
+import 'leaflet/dist/leaflet.css'
 
 export function BasemapTiles() {
   return (

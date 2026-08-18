@@ -1,9 +1,23 @@
+import { lazy } from 'react'
 import { createBrowserRouter } from 'react-router-dom'
 
 import { Layout } from './Layout.tsx'
-import { Dashboard } from '../pages/Dashboard.tsx'
-import { EventExplorer } from '../pages/EventExplorer.tsx'
-import { EventDetail } from '../pages/EventDetail.tsx'
+
+const Dashboard = lazy(() =>
+  import('../pages/Dashboard.tsx').then((module) => ({
+    default: module.Dashboard,
+  })),
+)
+const EventExplorer = lazy(() =>
+  import('../pages/EventExplorer.tsx').then((module) => ({
+    default: module.EventExplorer,
+  })),
+)
+const EventDetail = lazy(() =>
+  import('../pages/EventDetail.tsx').then((module) => ({
+    default: module.EventDetail,
+  })),
+)
 
 export const router = createBrowserRouter([
   {

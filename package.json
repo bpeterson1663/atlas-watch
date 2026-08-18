@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\"",
     "test": "vitest run",
-    "test:watch": "vitest watch"
+    "test:watch": "vitest watch",
+    "deploy": "npm run build && firebase deploy --only hosting"
   },
   "dependencies": {
     "@mantine/core": "^9.5.1",

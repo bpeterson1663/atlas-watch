@@ -4,9 +4,6 @@ import { MantineProvider } from '@mantine/core'
 import { theme } from '../styles/theme'
 
 import '@mantine/core/styles.css'
-import 'leaflet/dist/leaflet.css'
-import 'leaflet.markercluster/dist/MarkerCluster.css'
-import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 
 function App() {
   return (

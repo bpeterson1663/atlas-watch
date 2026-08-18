@@ -1,4 +1,5 @@
-import { AppShell, Box } from '@mantine/core'
+import { AppShell, Box, Center, Loader } from '@mantine/core'
+import { Suspense } from 'react'
 import { Outlet } from 'react-router-dom'
 import { Header } from './Header'
 import layout from '../styles/layout.module.css'
@@ -11,7 +12,15 @@ export function Layout() {
       </AppShell.Header>
       <AppShell.Main>
         <Box className={layout.container}>
-          <Outlet />
+          <Suspense
+            fallback={
+              <Center h={240}>
+                <Loader color="navy" />
+              </Center>
+            }
+          >
+            <Outlet />
+          </Suspense>
         </Box>
       </AppShell.Main>
     </AppShell>

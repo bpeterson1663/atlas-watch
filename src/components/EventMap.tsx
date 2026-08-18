@@ -1,5 +1,7 @@
 import { CircleMarker, MapContainer, Tooltip, useMap } from 'react-leaflet'
 import MarkerClusterGroup from 'react-leaflet-cluster'
+import 'leaflet.markercluster/dist/MarkerCluster.css'
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 import type { EventView } from '../types/event'
 import { categoryStyle } from '../lib/category'
 import { useEffect } from 'react'
