@@ -5,11 +5,11 @@ import {
   MapContainer,
   Polygon,
   Polyline,
-  TileLayer,
   Tooltip,
   useMap,
 } from 'react-leaflet'
 import { ResizeMap } from './ResizeMap'
+import { BasemapTiles } from './BasemapTiles'
 import type { EventObservation } from '../types/event'
 import { categoryStyle } from '../lib/category'
 import { formatUtc } from '../lib/date'
@@ -40,14 +40,11 @@ export function EventTrackMap({ observations, categoryId }: Props) {
     <div className={mapClasses.shell}>
       <MapContainer
         center={boundsPoints[0] ?? [20, 0]}
-        zoom={boundsPoints.length === 1 ? 4 : 2}
+        zoom={boundsPoints.length === 1 ? 10 : 4}
         className={mapClasses.container}
         scrollWheelZoom
       >
-        <TileLayer
-          attribution="&copy; OpenStreetMap &copy; CARTO"
-          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-        />
+        <BasemapTiles />
         <ResizeMap />
         <FitBounds points={boundsPoints} />
         {observations.map((observation, index) => {
@@ -129,11 +126,11 @@ function FitBounds({ points }: { points: [number, number][] }) {
       }
 
       if (points.length === 1) {
-        leafletMap.setView(points[0], 4)
+        leafletMap.setView(points[0], 8)
         return true
       }
 
-      leafletMap.fitBounds(points, { padding: [28, 28], maxZoom: 8 })
+      leafletMap.fitBounds(points, { padding: [28, 28], maxZoom: 12 })
       return true
     }
 

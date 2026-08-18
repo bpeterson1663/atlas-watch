@@ -1,0 +1,13 @@
+.root {
+  flex-shrink: 0;
+}
+
+.search {
+  flex: 1 1 220px;
+  min-width: 180px;
+}
+
+.count {
+  margin-inline-start: auto;
+  white-space: nowrap;
+}

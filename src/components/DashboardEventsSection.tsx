@@ -42,9 +42,9 @@ export function DashboardEventsSection({
 
   const listContent = showSkeleton ? (
     <>
-      <Skeleton height={88} mb="sm" />
-      <Skeleton height={88} mb="sm" />
-      <Skeleton height={88} />
+      <Skeleton height={64} mb={6} />
+      <Skeleton height={64} mb={6} />
+      <Skeleton height={64} />
     </>
   ) : (
     <>
@@ -55,9 +55,9 @@ export function DashboardEventsSection({
 
   if (isDesktop) {
     return (
-      <Group align="stretch" grow wrap="nowrap" flex={1} mih={0}>
-        <MapPane>{mapContent}</MapPane>
-        <ScrollArea flex={1} h="100%" type="hover">
+      <Group align="stretch" wrap="nowrap" flex={1} mih={0} gap="md">
+        <MapPane flex={2}>{mapContent}</MapPane>
+        <ScrollArea flex={1} h="100%" miw={280} type="hover">
           {listContent}
         </ScrollArea>
       </Group>

@@ -69,6 +69,15 @@ export function searchParamsFromFilters(
   return params
 }
 
+export function toDashboardFilters(filters: EventFilters): EventFilters {
+  return {
+    status: filters.status,
+    days: filters.days === 90 ? 30 : filters.days,
+    categories: [],
+    q: '',
+  }
+}
+
 export function filterEventsBySearch<
   T extends { title: string; locationLabel: string },
 >(events: T[], q: string): T[] {

@@ -12,8 +12,12 @@ describe('Dashboard', () => {
       </MemoryRouter>,
     )
 
-    expect(screen.getByText('Status')).toBeInTheDocument()
-    expect(screen.getByText('Time range')).toBeInTheDocument()
+    expect(
+      screen.getByRole('radiogroup', { name: 'Status' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('radiogroup', { name: 'Time range' }),
+    ).toBeInTheDocument()
     expect(
       screen.queryByPlaceholderText(/search events or locations/i),
     ).not.toBeInTheDocument()

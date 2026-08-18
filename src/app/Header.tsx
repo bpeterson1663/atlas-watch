@@ -1,28 +1,60 @@
-import { Group, Text, ThemeIcon, Title } from '@mantine/core'
+import { Box, Group, Text, ThemeIcon } from '@mantine/core'
 import { IconWorld } from '@tabler/icons-react'
+import { Link, useLocation } from 'react-router-dom'
+import layout from '../styles/layout.module.css'
+import classes from './Header.module.css'
+
+function HeaderNavLink({
+  to,
+  label,
+  matchPath,
+}: {
+  to: string
+  label: string
+  matchPath: string
+}) {
+  const location = useLocation()
+  const active = location.pathname === matchPath
+
+  return (
+    <Link
+      to={to}
+      className={`${classes.link}${active ? ` ${classes.linkActive}` : ''}`}
+      aria-current={active ? 'page' : undefined}
+    >
+      {label}
+    </Link>
+  )
+}
 
 export function Header() {
   return (
-    <Group
-      h="100%"
-      px="md"
-      py={{ base: 'xs', sm: 0 }}
-      justify="space-between"
-      align="center"
-      wrap="wrap"
-      gap="sm"
-    >
-      <Group gap="sm">
-        <ThemeIcon variant="light" color="navy" size="lg" radius="md">
-          <IconWorld size={20} />
-        </ThemeIcon>
-        <div>
-          <Title order={4}>Atlas Watch</Title>
-          <Text size="xs" c="dimmed">
-            Explore active natural events around the world
+    <Box className={classes.shell}>
+      <Group
+        className={`${classes.root} ${layout.container}`}
+        justify="space-between"
+        align="center"
+        wrap="nowrap"
+        gap="sm"
+      >
+        <Link to="/" className={classes.brand}>
+          <ThemeIcon variant="light" color="navy" size={32} radius="md">
+            <IconWorld size={18} />
+          </ThemeIcon>
+          <Text fw={700} size="md" lh={1}>
+            Atlas Watch
           </Text>
-        </div>
+        </Link>
+
+        <nav className={classes.nav} aria-label="Primary">
+          <HeaderNavLink to="/" label="Dashboard" matchPath="/" />
+          <HeaderNavLink
+            to="/explorer"
+            label="Event Explorer"
+            matchPath="/explorer"
+          />
+        </nav>
       </Group>
-    </Group>
+    </Box>
   )
 }

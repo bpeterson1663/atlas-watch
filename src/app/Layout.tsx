@@ -1,15 +1,18 @@
-import { AppShell } from '@mantine/core'
+import { AppShell, Box } from '@mantine/core'
 import { Outlet } from 'react-router-dom'
 import { Header } from './Header'
+import layout from '../styles/layout.module.css'
 
 export function Layout() {
   return (
-    <AppShell header={{ height: 72 }} padding="md">
+    <AppShell header={{ height: 56 }} padding="md">
       <AppShell.Header>
         <Header />
       </AppShell.Header>
       <AppShell.Main>
-        <Outlet />
+        <Box className={layout.container}>
+          <Outlet />
+        </Box>
       </AppShell.Main>
     </AppShell>
   )

@@ -1,87 +1,69 @@
-import {
-  Badge,
-  Button,
-  Card,
-  Group,
-  Stack,
-  Text,
-  ThemeIcon,
-} from '@mantine/core'
+import { Badge, Card, Group, Stack, Text, ThemeIcon } from '@mantine/core'
+import { IconCalendar, IconChevronRight, IconMapPin } from '@tabler/icons-react'
+import { Link, useLocation } from 'react-router-dom'
 import type { EventView } from '../types/event'
 import { categoryStyle } from '../lib/category'
-import { IconCalendar, IconMapPin } from '@tabler/icons-react'
 import { formatUtc } from '../lib/date'
-import { Link, useLocation } from 'react-router-dom'
 import classes from './EventCard.module.css'
 
 interface Props {
   event: EventView
-  selected?: boolean
-  onSelect?: (id: string) => void
 }
 
-export function EventCard({ event, selected = false, onSelect }: Props) {
+export function EventCard({ event }: Props) {
   const location = useLocation()
   const { color, icon: Icon } = categoryStyle(event.categoryId)
 
   return (
     <Card
+      component={Link}
+      to={{
+        pathname: `/events/${encodeURIComponent(event.id)}`,
+        search: location.search,
+      }}
       withBorder
       padding="sm"
       radius="md"
-      className={onSelect ? classes.clickable : undefined}
-      bd={selected ? `1px solid var(--mantine-color-${color}-5)` : undefined}
-      onClick={() => onSelect?.(event.id)}
+      className={classes.card}
     >
-      <ThemeIcon size={44} radius="md" color={color} variant="filled">
-        <Icon size={22} />
-      </ThemeIcon>
+      <Group className={classes.row} wrap="nowrap" gap="sm" align="center">
+        <ThemeIcon size={36} radius="sm" color={color} variant="filled">
+          <Icon size={18} />
+        </ThemeIcon>
 
-      <Stack gap={4} className={classes.content}>
-        <Group justify="space-between" wrap="nowrap" align="flex-start">
-          <Text fw={600} lineClamp={2}>
+        <Stack gap={2} className={classes.content}>
+          <Text fw={600} size="sm" lineClamp={1}>
             {event.title}
           </Text>
+          <Group gap={4} wrap="nowrap">
+            <IconCalendar size={12} color="gray" />
+            <Text size="xs" c="dimmed" lineClamp={1}>
+              {formatUtc(event.lastDate)}
+            </Text>
+          </Group>
+          <Group gap={4} wrap="nowrap" className={classes.meta}>
+            <IconMapPin size={12} color="gray" />
+            <Text size="xs" c="dimmed" lineClamp={1}>
+              {event.locationLabel}
+            </Text>
+          </Group>
+        </Stack>
+
+        <Stack gap={4} align="flex-end">
           <Badge
-            size="sm"
+            size="xs"
             color={event.isOpen ? 'red' : 'gray'}
             variant="filled"
           >
             {event.isOpen ? 'ACTIVE' : 'CLOSED'}
           </Badge>
-        </Group>
-        <Group gap={6} wrap="nowrap">
-          <IconCalendar size={14} color="gray" />
-          <Text size="xs" c="dimmed">
-            {formatUtc(event.lastDate)}
-          </Text>
-        </Group>
-        <Group justify="space-between" wrap="nowrap" align="flex-end">
-          <Group gap={6} wrap="nowrap" className={classes.location}>
-            <IconMapPin size={14} color="gray" />
-            <Text size="xs" c="dimmed" lineClamp={1}>
-              {event.locationLabel}
-            </Text>
-          </Group>
-          <Badge size="sm" color={color} variant="light">
+          <Badge size="xs" color={color} variant="light">
             {event.categoryTitle}
           </Badge>
-        </Group>
-        <Button
-          component={Link}
-          to={{
-            pathname: `/events/${encodeURIComponent(event.id)}`,
-            search: location.search,
-          }}
-          size="xs"
-          color="navy"
-          variant="filled"
-          mt={6}
-          onClick={(clickEvent) => clickEvent.stopPropagation()}
-        >
-          View details
-        </Button>
-      </Stack>
+        </Stack>
+
+        <IconChevronRight size={14} className={classes.chevron} />
+      </Group>
     </Card>
   )
 }

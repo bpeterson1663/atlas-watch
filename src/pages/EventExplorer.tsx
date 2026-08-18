@@ -1,6 +1,4 @@
-import { Anchor, Group, Stack, Text, Title } from '@mantine/core'
-import { IconArrowLeft } from '@tabler/icons-react'
-import { Link, useLocation } from 'react-router-dom'
+import { Stack, Text, Title } from '@mantine/core'
 import { useMemo } from 'react'
 import { ExplorerEventsSection } from '../components/ExplorerEventsSection'
 import { FilterBar } from '../components/FilterBar'
@@ -11,7 +9,6 @@ import { filterEventsBySearch } from '../lib/filters'
 import { normalizeEvents } from '../lib/normalize'
 
 export function EventExplorer() {
-  const location = useLocation()
   const { filters, setFilters } = useEventFilters()
   const { categories, status: categoriesStatus } = useCategories()
   const { events, status: eventsStatus, message } = useEvents(filters)
@@ -31,18 +28,7 @@ export function EventExplorer() {
     eventsStatus === 'loading' || eventsStatus === 'refreshing'
 
   return (
-    <Stack gap="md" flex={1} h="calc(100vh - 104px)" mih={0}>
-      <Anchor
-        component={Link}
-        to={{ pathname: '/', search: location.search }}
-        size="sm"
-      >
-        <Group gap={6} wrap="nowrap">
-          <IconArrowLeft size={14} />
-          Back to dashboard
-        </Group>
-      </Anchor>
-
+    <Stack gap="md" flex={1} h="calc(100vh - 88px)" mih={0}>
       <Stack gap={4}>
         <Title order={3}>Event Explorer</Title>
         <Text size="sm" c="dimmed">

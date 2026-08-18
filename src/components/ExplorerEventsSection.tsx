@@ -27,18 +27,8 @@ export function ExplorerEventsSection({ views, status, message }: Props) {
   const selected = views.find((event) => event.id === selectedId)
 
   useEffect(() => {
-    setSelectedId(null)
-  }, [views])
-
-  useEffect(() => {
     if (selectedId && !views.some((event) => event.id === selectedId)) {
-      setSelectedId(views[0]?.id ?? null)
-    }
-  }, [views, selectedId])
-
-  useEffect(() => {
-    if (!selectedId && views.length > 0) {
-      setSelectedId(views[0].id)
+      setSelectedId(null)
     }
   }, [views, selectedId])
 

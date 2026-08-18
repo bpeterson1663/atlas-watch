@@ -1,16 +1,11 @@
-import {
-  CircleMarker,
-  MapContainer,
-  TileLayer,
-  Tooltip,
-  useMap,
-} from 'react-leaflet'
+import { CircleMarker, MapContainer, Tooltip, useMap } from 'react-leaflet'
 import MarkerClusterGroup from 'react-leaflet-cluster'
 import type { EventView } from '../types/event'
 import { categoryStyle } from '../lib/category'
 import { useEffect } from 'react'
 import { Badge } from '@mantine/core'
 import { ResizeMap } from './ResizeMap'
+import { BasemapTiles } from './BasemapTiles'
 import mapClasses from '../styles/map.module.css'
 
 type EventMapProps = {
@@ -41,7 +36,8 @@ function FlyToSelected({ event }: { event: EventView | undefined }) {
     }
 
     const zoom = leafletMap.getZoom()
-    leafletMap.flyTo(point, Number.isFinite(zoom) ? Math.max(zoom, 4) : 4, {
+    const nextZoom = Number.isFinite(zoom) ? Math.max(zoom, 7) : 7
+    leafletMap.flyTo(point, nextZoom, {
       duration: 0.6,
     })
   }, [event, leafletMap])
@@ -76,10 +72,7 @@ export function EventMap({
         className={mapClasses.container}
         scrollWheelZoom
       >
-        <TileLayer
-          attribution="&copy; OpenStreetMap &copy; CARTO"
-          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-        />
+        <BasemapTiles />
         <ResizeMap />
         {interactive && <FlyToSelected event={selected} />}
         <MarkerClusterGroup chunkedLoading maxClusterRadius={50}>

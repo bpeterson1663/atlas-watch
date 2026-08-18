@@ -1,0 +1,11 @@
+.trigger {
+  flex: 0 0 auto;
+  min-width: 180px;
+  max-width: 220px;
+}
+
+.trigger :global(.mantine-Button-label) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

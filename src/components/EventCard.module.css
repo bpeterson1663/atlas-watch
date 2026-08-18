@@ -1,5 +1,15 @@
-.clickable {
-  cursor: pointer;
+.card {
+  text-decoration: none;
+  color: inherit;
+}
+
+.card:hover {
+  border-color: var(--mantine-color-navy-3);
+  background: var(--mantine-color-gray-0);
+}
+
+.row {
+  width: 100%;
 }
 
 .content {
@@ -7,6 +17,15 @@
   min-width: 0;
 }
 
-.location {
+.meta {
   min-width: 0;
+}
+
+.chevron {
+  flex-shrink: 0;
+  color: var(--mantine-color-gray-5);
+}
+
+.card:hover .chevron {
+  color: var(--mantine-color-navy-6);
 }

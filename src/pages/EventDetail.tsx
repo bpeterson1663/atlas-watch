@@ -11,7 +11,7 @@ import {
 import { useMediaQuery } from '@mantine/hooks'
 import { IconArrowLeft } from '@tabler/icons-react'
 import type { ReactNode } from 'react'
-import { Link, useLocation, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { EventDetailPanel } from '../components/EventDetailPanel'
 import { EventTrackMap } from '../components/EventTrackMap'
 import { MapPane } from '../components/MapPane'
@@ -23,15 +23,12 @@ const MOBILE_MAP_HEIGHT = 280
 
 export function EventDetail() {
   const { eventId } = useParams()
-  const location = useLocation()
   const isDesktop = useMediaQuery('(min-width: 62em)')
   const { event, status, message } = useEvent(eventId)
 
-  const backTo = { pathname: '/', search: location.search }
-
   if (status === 'loading') {
     return (
-      <DetailLayout backTo={backTo} isDesktop={isDesktop}>
+      <DetailLayout isDesktop={isDesktop}>
         {isDesktop ? (
           <Group align="stretch" grow wrap="nowrap" flex={1} mih={0}>
             <Skeleton
@@ -60,7 +57,7 @@ export function EventDetail() {
   if (status === 'error' || !event) {
     return (
       <Stack gap="md">
-        <BackLink to={backTo} />
+        <BackLink />
         <Title order={3}>Event not found</Title>
         <Text c="dimmed">{message}</Text>
       </Stack>
@@ -83,7 +80,7 @@ export function EventDetail() {
     )
 
   return (
-    <DetailLayout backTo={backTo} isDesktop={isDesktop}>
+    <DetailLayout isDesktop={isDesktop}>
       {isDesktop ? (
         <Group align="stretch" grow wrap="nowrap" flex={1} mih={0}>
           <MapPane>{mapContent}</MapPane>
@@ -104,11 +101,9 @@ export function EventDetail() {
 }
 
 function DetailLayout({
-  backTo,
   isDesktop,
   children,
 }: {
-  backTo: { pathname: string; search: string }
   isDesktop: boolean | undefined
   children: ReactNode
 }) {
@@ -116,21 +111,28 @@ function DetailLayout({
     <Stack
       gap="md"
       flex={1}
-      h={isDesktop ? 'calc(100vh - 104px)' : 'auto'}
+      h={isDesktop ? 'calc(100vh - 88px)' : 'auto'}
       mih={0}
     >
-      <BackLink to={backTo} />
+      <BackLink />
       {children}
     </Stack>
   )
 }
 
-function BackLink({ to }: { to: { pathname: string; search: string } }) {
+function BackLink() {
+  const navigate = useNavigate()
+
   return (
-    <Anchor component={Link} to={to} size="sm">
+    <Anchor
+      component="button"
+      type="button"
+      size="sm"
+      onClick={() => navigate(-1)}
+    >
       <Group gap={6} wrap="nowrap">
         <IconArrowLeft size={14} />
-        Back to results
+        Back
       </Group>
     </Anchor>
   )

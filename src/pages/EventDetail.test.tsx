@@ -14,7 +14,7 @@ describe('EventDetail', () => {
       </MemoryRouter>,
     )
 
-    expect(screen.getByText('Back to results')).toBeInTheDocument()
+    expect(screen.getByText('Back')).toBeInTheDocument()
     expect(
       container.querySelectorAll('.mantine-Skeleton-root').length,
     ).toBeGreaterThan(0)

@@ -4,7 +4,6 @@ import {
   Group,
   Menu,
   Pagination,
-  Select,
   Stack,
   Table,
   Text,
