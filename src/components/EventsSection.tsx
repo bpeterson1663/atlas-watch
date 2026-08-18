@@ -1,38 +1,32 @@
 import { Group, ScrollArea, Skeleton, Stack } from '@mantine/core'
 import { useMediaQuery } from '@mantine/hooks'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { EventList } from './EventList'
-import { normalizeEvents } from '../lib/normalize'
-import { filterEventsBySearch } from '../lib/filters'
 import { EventMap } from './EventMap'
+import { EventsLimitNotice } from './EventsLimitNotice'
 import { MapPane } from './MapPane'
-import type { EventFilters } from '../types/filter'
-import type { EonetEvent } from '../types/event'
+import type { EventView } from '../types/event'
 import type { Status } from '../types/status'
 
 const MOBILE_MAP_HEIGHT = 280
 
 interface Props {
-  filters: EventFilters
-  events: EonetEvent[]
+  views: EventView[]
+  totalCount: number
   status: Status
   message: string
 }
 
-export function EventsSection({ filters, events, status, message }: Props) {
+export function EventsSection({ views, totalCount, status, message }: Props) {
   const isDesktop = useMediaQuery('(min-width: 62em)')
   const [selectedId, setSelectedId] = useState<string | null>(null)
-
-  const views = useMemo(() => {
-    if (status !== 'success') {
-      return []
-    }
-    return filterEventsBySearch(normalizeEvents(events), filters.q)
-  }, [events, status, filters.q])
+  const isInitialLoad = status === 'loading' && views.length === 0 && totalCount === 0
+  const isRefreshing = status === 'refreshing'
+  const showSkeleton = isInitialLoad || isRefreshing
 
   useEffect(() => {
     setSelectedId(null)
-  }, [filters.status, filters.days, filters.categories.join(','), filters.q])
+  }, [views])
 
   useEffect(() => {
     if (selectedId && !views.some((event) => event.id === selectedId)) {
@@ -44,31 +38,28 @@ export function EventsSection({ filters, events, status, message }: Props) {
     return <p>Error loading events: {message}</p>
   }
 
-  const mapContent =
-    status === 'success' ? (
-      <EventMap
-        events={views}
-        selectedId={selectedId}
-        onSelect={setSelectedId}
-      />
-    ) : (
-      <Skeleton height="100%" />
-    )
+  const mapContent = showSkeleton ? (
+    <Skeleton height="100%" />
+  ) : (
+    <EventMap events={views} selectedId={selectedId} onSelect={setSelectedId} />
+  )
 
-  const listContent =
-    status === 'loading' ? (
-      <>
-        <Skeleton height={88} mb="sm" />
-        <Skeleton height={88} mb="sm" />
-        <Skeleton height={88} />
-      </>
-    ) : (
+  const listContent = showSkeleton ? (
+    <>
+      <Skeleton height={88} mb="sm" />
+      <Skeleton height={88} mb="sm" />
+      <Skeleton height={88} />
+    </>
+  ) : (
+    <>
       <EventList
         events={views}
         selectedId={selectedId}
         onSelect={setSelectedId}
       />
-    )
+      <EventsLimitNotice shown={views.length} total={totalCount} />
+    </>
+  )
 
   if (isDesktop) {
     return (

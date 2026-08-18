@@ -1,10 +1,11 @@
 import {
+  CircleMarker,
   MapContainer,
   TileLayer,
-  CircleMarker,
   Tooltip,
   useMap,
 } from 'react-leaflet'
+import MarkerClusterGroup from 'react-leaflet-cluster'
 import type { EventView } from '../types/event'
 import { categoryStyle } from '../lib/category'
 import { useEffect } from 'react'
@@ -46,7 +47,7 @@ function FlyToSelected({ event }: { event: EventView | undefined }) {
 }
 
 export function EventMap({ events, selectedId, onSelect }: EventMapProps) {
-  const selected = events.find((e) => e.id === selectedId)
+  const selected = events.find((event) => event.id === selectedId)
 
   return (
     <div className={mapClasses.shell}>
@@ -62,33 +63,36 @@ export function EventMap({ events, selectedId, onSelect }: EventMapProps) {
         />
         <ResizeMap />
         <FlyToSelected event={selected} />
-        {events.map((event) => {
-          const point = coordinatesOf(event)
-          if (!point) {
-            return null
-          }
-          const selectedMark = event.id === selectedId
-          return (
-            <CircleMarker
-              key={event.id}
-              center={point}
-              radius={selectedMark ? 10 : 6}
-              pathOptions={{
-                color: selectedMark
-                  ? 'var(--mantine-color-navy-6)'
-                  : categoryStyle(event.categoryId).hex,
-                fillColor: categoryStyle(event.categoryId).hex,
-                fillOpacity: 0.9,
-                weight: selectedMark ? 3 : 1,
-              }}
-              eventHandlers={{ click: () => onSelect(event.id) }}
-            >
-              <Tooltip>
-                {event.title} · {event.categoryTitle}
-              </Tooltip>
-            </CircleMarker>
-          )
-        })}
+        <MarkerClusterGroup chunkedLoading maxClusterRadius={50}>
+          {events.map((event) => {
+            const point = coordinatesOf(event)
+            if (!point) {
+              return null
+            }
+            const selectedMark = event.id === selectedId
+            const { hex } = categoryStyle(event.categoryId)
+            return (
+              <CircleMarker
+                key={event.id}
+                center={point}
+                radius={selectedMark ? 10 : 6}
+                pathOptions={{
+                  color: selectedMark ? 'var(--mantine-color-navy-6)' : hex,
+                  fillColor: hex,
+                  fillOpacity: 0.9,
+                  weight: selectedMark ? 3 : 1,
+                }}
+                eventHandlers={{ click: () => onSelect(event.id) }}
+              >
+                {selectedMark && (
+                  <Tooltip>
+                    {event.title} · {event.categoryTitle}
+                  </Tooltip>
+                )}
+              </CircleMarker>
+            )
+          })}
+        </MarkerClusterGroup>
       </MapContainer>
     </div>
   )

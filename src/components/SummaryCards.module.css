@@ -1,0 +1,27 @@
+.root {
+  flex-shrink: 0;
+}
+
+.iconWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--mantine-radius-md);
+  flex-shrink: 0;
+}
+
+.iconWrapEvents {
+  background: var(--mantine-color-navy-0);
+  color: var(--mantine-color-navy-6);
+}
+
+.iconWrapCategory {
+  background: var(--mantine-color-gray-0);
+}
+
+.iconWrapSources {
+  background: var(--mantine-color-teal-0);
+  color: var(--mantine-color-teal-7);
+}

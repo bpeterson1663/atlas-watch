@@ -23,6 +23,12 @@ export function useEvents(
   useEffect(() => {
     const controller = new AbortController()
 
+    setState((prev) => ({
+      ...prev,
+      status: prev.events.length > 0 ? 'refreshing' : 'loading',
+      message: '',
+    }))
+
     async function loadEvents() {
       try {
         const { events } = await getEvents(filters, controller.signal)
