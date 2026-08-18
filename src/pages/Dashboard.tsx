@@ -1,22 +1,32 @@
 import { Stack } from '@mantine/core'
 import { useMemo } from 'react'
-import { EventsSection } from '../components/EventsSection'
+import { DashboardEventsSection } from '../components/DashboardEventsSection'
 import { useEventFilters } from '../hooks/useEventFilters'
-import { useCategories } from '../hooks/useCategories'
 import { useEvents } from '../hooks/useEvents'
 import { FilterBar } from '../components/FilterBar'
 import { SummaryCards } from '../components/SummaryCards'
-import { DASHBOARD_EVENT_LIMIT } from '../lib/constants'
-import { filterEventsBySearch } from '../lib/filters'
+import {
+  DASHBOARD_EVENT_LIMIT,
+  DASHBOARD_MAP_LIMIT,
+} from '../lib/constants'
 import { normalizeEvents } from '../lib/normalize'
 import { buildDashboardSummary } from '../lib/summary'
 
 export function Dashboard() {
   const { filters, setFilters } = useEventFilters()
-  const { categories, status: categoriesStatus } = useCategories()
-  const { events, status: eventsStatus, message } = useEvents(filters)
 
-  const normalizedViews = useMemo(() => {
+  const dashboardFilters = useMemo(
+    () => ({
+      status: filters.status,
+      days: filters.days,
+      categories: [] as string[],
+    }),
+    [filters.status, filters.days],
+  )
+
+  const { events, status: eventsStatus, message } = useEvents(dashboardFilters)
+
+  const views = useMemo(() => {
     if (eventsStatus === 'error') {
       return []
     }
@@ -26,13 +36,13 @@ export function Dashboard() {
     return normalizeEvents(events)
   }, [events, eventsStatus])
 
-  const views = useMemo(
-    () => filterEventsBySearch(normalizedViews, filters.q),
-    [normalizedViews, filters.q],
+  const listViews = useMemo(
+    () => views.slice(0, DASHBOARD_EVENT_LIMIT),
+    [views],
   )
 
-  const displayViews = useMemo(
-    () => views.slice(0, DASHBOARD_EVENT_LIMIT),
+  const mapViews = useMemo(
+    () => views.slice(0, DASHBOARD_MAP_LIMIT),
     [views],
   )
 
@@ -54,8 +64,7 @@ export function Dashboard() {
       mih={0}
     >
       <FilterBar
-        categories={categories}
-        categoriesLoading={categoriesStatus === 'loading'}
+        mode="dashboard"
         filters={filters}
         eventCount={eventCount}
         eventsLoading={showSkeleton}
@@ -67,8 +76,9 @@ export function Dashboard() {
         loading={showSkeleton}
       />
       <Stack flex={1} mih={0} gap={0}>
-        <EventsSection
-          views={displayViews}
+        <DashboardEventsSection
+          listViews={listViews}
+          mapViews={mapViews}
           totalCount={views.length}
           status={eventsStatus}
           message={message}

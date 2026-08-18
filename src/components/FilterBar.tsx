@@ -14,7 +14,8 @@ import type { DaysFilter, EventFilters, StatusFilter } from '../types/filter'
 import layout from '../styles/layout.module.css'
 
 interface Props {
-  categories: Category[]
+  mode: 'dashboard' | 'explorer'
+  categories?: Category[]
   categoriesLoading?: boolean
   filters: EventFilters
   eventCount?: number
@@ -23,7 +24,8 @@ interface Props {
 }
 
 export function FilterBar({
-  categories,
+  mode,
+  categories = [],
   categoriesLoading = false,
   filters,
   eventCount,
@@ -39,13 +41,15 @@ export function FilterBar({
     <Paper withBorder p="md" radius="md">
       <Stack gap="sm">
         <Group align="flex-end" wrap="wrap" gap="sm">
-          <TextInput
-            className={layout.searchInput}
-            placeholder="Search events or locations..."
-            leftSection={<IconSearch size={16} />}
-            value={filters.q}
-            onChange={(event) => onChange({ q: event.currentTarget.value })}
-          />
+          {mode === 'explorer' && (
+            <TextInput
+              className={layout.searchInput}
+              placeholder="Search events or locations..."
+              leftSection={<IconSearch size={16} />}
+              value={filters.q}
+              onChange={(event) => onChange({ q: event.currentTarget.value })}
+            />
+          )}
 
           <Group gap="xs" wrap="nowrap">
             <Text size="xs" c="dimmed">
@@ -84,24 +88,26 @@ export function FilterBar({
           </Group>
         </Group>
 
-        <Group gap="xs" align="center" wrap="wrap">
-          {categoriesLoading ? (
-            <Skeleton height={36} w={320} radius="md" />
-          ) : (
-            <MultiSelect
-              placeholder="Select categories"
-              data={categoryOptions}
-              value={filters.categories}
-              onChange={(value) => onChange({ categories: value })}
-              leftSection={<IconWorld size={16} />}
-              searchable
-              clearable
-              maxDropdownHeight={280}
-              w={{ base: '100%' }}
-              comboboxProps={{ zIndex: 1000 }}
-            />
-          )}
-        </Group>
+        {mode === 'explorer' && (
+          <Group gap="xs" align="center" wrap="wrap">
+            {categoriesLoading ? (
+              <Skeleton height={36} w={320} radius="md" />
+            ) : (
+              <MultiSelect
+                placeholder="Select categories"
+                data={categoryOptions}
+                value={filters.categories}
+                onChange={(value) => onChange({ categories: value })}
+                leftSection={<IconWorld size={16} />}
+                searchable
+                clearable
+                maxDropdownHeight={280}
+                w={{ base: '100%' }}
+                comboboxProps={{ zIndex: 1000 }}
+              />
+            )}
+          </Group>
+        )}
 
         <Group gap="xs" align="center" wrap="wrap">
           {eventsLoading ? (

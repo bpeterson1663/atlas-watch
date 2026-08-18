@@ -9,13 +9,15 @@ import MarkerClusterGroup from 'react-leaflet-cluster'
 import type { EventView } from '../types/event'
 import { categoryStyle } from '../lib/category'
 import { useEffect } from 'react'
+import { Badge } from '@mantine/core'
 import { ResizeMap } from './ResizeMap'
 import mapClasses from '../styles/map.module.css'
 
 type EventMapProps = {
   events: EventView[]
-  selectedId: string | null
-  onSelect: (id: string) => void
+  interactive?: boolean
+  selectedId?: string | null
+  onSelect?: (id: string) => void
 }
 
 function coordinatesOf(event: EventView): [number, number] | null {
@@ -46,11 +48,28 @@ function FlyToSelected({ event }: { event: EventView | undefined }) {
   return null
 }
 
-export function EventMap({ events, selectedId, onSelect }: EventMapProps) {
-  const selected = events.find((event) => event.id === selectedId)
+export function EventMap({
+  events,
+  interactive = true,
+  selectedId = null,
+  onSelect,
+}: EventMapProps) {
+  const selected = interactive
+    ? events.find((event) => event.id === selectedId)
+    : undefined
 
   return (
     <div className={mapClasses.shell}>
+      {!interactive && (
+        <Badge
+          className={mapClasses.overviewLabel}
+          variant="light"
+          color="gray"
+          size="sm"
+        >
+          Map overview
+        </Badge>
+      )}
       <MapContainer
         center={[20, 0]}
         zoom={2}
@@ -62,14 +81,14 @@ export function EventMap({ events, selectedId, onSelect }: EventMapProps) {
           url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
         />
         <ResizeMap />
-        <FlyToSelected event={selected} />
+        {interactive && <FlyToSelected event={selected} />}
         <MarkerClusterGroup chunkedLoading maxClusterRadius={50}>
           {events.map((event) => {
             const point = coordinatesOf(event)
             if (!point) {
               return null
             }
-            const selectedMark = event.id === selectedId
+            const selectedMark = interactive && event.id === selectedId
             const { hex } = categoryStyle(event.categoryId)
             return (
               <CircleMarker
@@ -82,7 +101,11 @@ export function EventMap({ events, selectedId, onSelect }: EventMapProps) {
                   fillOpacity: 0.9,
                   weight: selectedMark ? 3 : 1,
                 }}
-                eventHandlers={{ click: () => onSelect(event.id) }}
+                eventHandlers={
+                  interactive && onSelect
+                    ? { click: () => onSelect(event.id) }
+                    : undefined
+                }
               >
                 {selectedMark && (
                   <Tooltip>

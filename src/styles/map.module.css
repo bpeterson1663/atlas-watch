@@ -44,3 +44,11 @@
 .legendDotEarliest {
   background: var(--mantine-color-red-6);
 }
+
+.overviewLabel {
+  position: absolute;
+  top: var(--mantine-spacing-sm);
+  left: var(--mantine-spacing-sm);
+  z-index: 1000;
+  pointer-events: none;
+}

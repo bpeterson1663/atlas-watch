@@ -5,16 +5,18 @@ import { renderWithMantine } from '../test/render'
 import { Dashboard } from './Dashboard'
 
 describe('Dashboard', () => {
-  it('renders the filter bar and loading layout', () => {
+  it('renders status/time filters and loading layout', () => {
     const { container } = renderWithMantine(
       <MemoryRouter>
         <Dashboard />
       </MemoryRouter>,
     )
 
+    expect(screen.getByText('Status')).toBeInTheDocument()
+    expect(screen.getByText('Time range')).toBeInTheDocument()
     expect(
-      screen.getByPlaceholderText(/search events or locations/i),
-    ).toBeInTheDocument()
+      screen.queryByPlaceholderText(/search events or locations/i),
+    ).not.toBeInTheDocument()
     expect(
       container.querySelectorAll('.mantine-Skeleton-root').length,
     ).toBeGreaterThan(0)
