@@ -1,0 +1,26 @@
+.selectedRow {
+  background: var(--mantine-color-teal-0);
+  box-shadow: inset 3px 0 0 var(--mantine-color-teal-6);
+}
+
+.clickableRow {
+  cursor: pointer;
+}
+
+.eventNameCell {
+  min-width: 200px;
+}
+
+.locationCell {
+  max-width: 160px;
+}
+
+.tableWrap {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.toolbar {
+  flex-shrink: 0;
+}

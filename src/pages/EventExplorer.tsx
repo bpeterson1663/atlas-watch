@@ -43,7 +43,12 @@ export function EventExplorer() {
         </Group>
       </Anchor>
 
-      <Title order={3}>Event Explorer</Title>
+      <Stack gap={4}>
+        <Title order={3}>Event Explorer</Title>
+        <Text size="sm" c="dimmed">
+          Browse and filter global natural events from NASA EONET.
+        </Text>
+      </Stack>
 
       <FilterBar
         mode="explorer"

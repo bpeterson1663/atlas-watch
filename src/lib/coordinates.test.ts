@@ -30,6 +30,20 @@ describe('latLngFromGeometry', () => {
     })
   })
 
+  it('reads GeoJSON points when both values are within ±90', () => {
+    // Zambia region: [lng, lat] = [25.10, -17.58]
+    expect(latLngFromGeometry(geoPoint(-17.58, 25.1))).toEqual({
+      lat: -17.58,
+      lng: 25.1,
+    })
+
+    // Angola region: [lng, lat] = [-10.15, -16.47]
+    expect(latLngFromGeometry(geoPoint(-16.47, -10.15))).toEqual({
+      lat: -16.47,
+      lng: -10.15,
+    })
+  })
+
   it('reads standard GeoJSON polygons', () => {
     const point = latLngFromGeometry(
       polygon([

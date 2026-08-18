@@ -5,10 +5,7 @@ import { useEventFilters } from '../hooks/useEventFilters'
 import { useEvents } from '../hooks/useEvents'
 import { FilterBar } from '../components/FilterBar'
 import { SummaryCards } from '../components/SummaryCards'
-import {
-  DASHBOARD_EVENT_LIMIT,
-  DASHBOARD_MAP_LIMIT,
-} from '../lib/constants'
+import { DASHBOARD_EVENT_LIMIT, DASHBOARD_MAP_LIMIT } from '../lib/constants'
 import { normalizeEvents } from '../lib/normalize'
 import { buildDashboardSummary } from '../lib/summary'
 
@@ -41,10 +38,7 @@ export function Dashboard() {
     [views],
   )
 
-  const mapViews = useMemo(
-    () => views.slice(0, DASHBOARD_MAP_LIMIT),
-    [views],
-  )
+  const mapViews = useMemo(() => views.slice(0, DASHBOARD_MAP_LIMIT), [views])
 
   const summary = useMemo(
     () => buildDashboardSummary(views, events),
@@ -63,17 +57,17 @@ export function Dashboard() {
       h={{ base: 'auto', md: 'calc(100vh - 104px)' }}
       mih={0}
     >
+      <SummaryCards
+        summary={summary}
+        filters={filters}
+        loading={showSkeleton}
+      />
       <FilterBar
         mode="dashboard"
         filters={filters}
         eventCount={eventCount}
         eventsLoading={showSkeleton}
         onChange={setFilters}
-      />
-      <SummaryCards
-        summary={summary}
-        filters={filters}
-        loading={showSkeleton}
       />
       <Stack flex={1} mih={0} gap={0}>
         <DashboardEventsSection

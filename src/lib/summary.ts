@@ -5,7 +5,12 @@ export interface DashboardSummary {
   eventCount: number
   openCount: number
   closedCount: number
-  topCategory: { id: string; title: string; count: number; share: number } | null
+  topCategory: {
+    id: string
+    title: string
+    count: number
+    share: number
+  } | null
   sourceCount: number
 }
 
@@ -35,9 +40,7 @@ export function buildDashboardSummary(
   }
 }
 
-function topCategory(
-  views: EventView[],
-): DashboardSummary['topCategory'] {
+function topCategory(views: EventView[]): DashboardSummary['topCategory'] {
   if (views.length === 0) {
     return null
   }

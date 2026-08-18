@@ -10,13 +10,17 @@ function view(overrides: Partial<EventView> = {}): EventView {
   return {
     id: 'EONET_1',
     title: 'Wildfire',
+    description: null,
     categoryId: 'wildfires',
     categoryTitle: 'Wildfires',
     isOpen: true,
+    firstDate: '2026-08-10T00:00:00Z',
     lastDate: '2026-08-16T00:00:00Z',
     locationLabel: 'California',
     lastLat: 1,
     lastLng: 1,
+    geometryCount: 1,
+    sourceCount: 1,
     ...overrides,
   }
 }

@@ -83,14 +83,7 @@ function toLatLng([a, b]: [number, number]): LatLng | null {
     return valid(a, b)
   }
 
-  const geoJson = valid(b, a)
-  const gdacs = valid(a, b)
-
-  if (!geoJson || !gdacs) {
-    return geoJson ?? gdacs
-  }
-
-  return preferReading(geoJson, gdacs) ?? gdacs
+  return valid(b, a)
 }
 
 function preferReading(geoJson: LatLng, gdacs: LatLng): LatLng | null {

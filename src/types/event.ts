@@ -21,13 +21,17 @@ export type MagnitudeKind = 'wind' | 'area' | 'none'
 export interface EventView {
   id: string
   title: string
+  description: string | null
   categoryId: string
   categoryTitle: string
   isOpen: boolean
+  firstDate: string
   lastDate: string
   locationLabel: string
   lastLat: number | null
   lastLng: number | null
+  geometryCount: number
+  sourceCount: number
 }
 
 export interface EventObservation {

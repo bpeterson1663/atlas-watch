@@ -15,9 +15,11 @@ export function normalizeEvent(event: EonetEvent): EventView {
   return {
     id: event.id,
     title: event.title,
+    description: event.description?.trim() || null,
     categoryId: event.categories[0]?.id ?? 'unknown',
     categoryTitle: event.categories[0]?.title ?? 'Unknown',
     isOpen: event.closed == null,
+    firstDate: event.geometry[0]?.date ?? '',
     lastDate: last?.date ?? '',
     lastLat: point?.lat ?? null,
     lastLng: point?.lng ?? null,
@@ -25,6 +27,8 @@ export function normalizeEvent(event: EonetEvent): EventView {
       placeFromTitle(event.title) ||
       formatGeometryLocation(last) ||
       'Location unavailable',
+    geometryCount: event.geometry.length,
+    sourceCount: event.sources?.length ?? 0,
   }
 }
 

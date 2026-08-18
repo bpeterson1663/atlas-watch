@@ -10,10 +10,7 @@ import {
 import type { ReactNode } from 'react'
 import { IconActivity, IconAntenna } from '@tabler/icons-react'
 import type { DashboardSummary } from '../lib/summary'
-import {
-  summaryEventSubtext,
-  summarySourceSubtext,
-} from '../lib/summary'
+import { summaryEventSubtext, summarySourceSubtext } from '../lib/summary'
 import { categoryStyle } from '../lib/category'
 import type { EventFilters } from '../types/filter'
 import classes from './SummaryCards.module.css'
@@ -27,7 +24,11 @@ interface Props {
 export function SummaryCards({ summary, filters, loading = false }: Props) {
   if (loading) {
     return (
-      <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="md" className={classes.root}>
+      <SimpleGrid
+        cols={{ base: 1, sm: 3 }}
+        spacing="md"
+        className={classes.root}
+      >
         <Skeleton height={88} radius="md" />
         <Skeleton height={88} radius="md" />
         <Skeleton height={88} radius="md" />
