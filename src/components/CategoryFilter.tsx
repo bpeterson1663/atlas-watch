@@ -1,4 +1,4 @@
-import { ActionIcon, Button, Checkbox, Menu } from '@mantine/core'
+import { ActionIcon, Button, Checkbox, Group, Menu } from '@mantine/core'
 import { IconChevronDown, IconWorld, IconX } from '@tabler/icons-react'
 import type { Category } from '../types/category'
 import classes from './CategoryFilter.module.css'
@@ -30,61 +30,57 @@ export function CategoryFilter({ categories, value, onChange }: Props) {
   }
 
   return (
-    <Menu
-      withinPortal
-      shadow="sm"
-      width={240}
-      position="bottom-start"
-      zIndex={2000}
-    >
-      <Menu.Target>
-        <Button
-          className={classes.trigger}
-          variant="default"
-          size="sm"
-          justify="space-between"
-          leftSection={<IconWorld size={16} />}
-          rightSection={
-            value.length > 0 ? (
-              <ActionIcon
-                size="xs"
-                variant="transparent"
-                color="gray"
-                aria-label="Clear categories"
-                onClick={(event) => {
-                  event.stopPropagation()
-                  onChange([])
-                }}
-              >
-                <IconX size={14} />
-              </ActionIcon>
-            ) : (
-              <IconChevronDown size={14} />
-            )
-          }
-        >
-          {label}
-        </Button>
-      </Menu.Target>
-      <Menu.Dropdown>
-        {categories.map((category) => (
-          <Menu.Item
-            key={category.id}
-            closeMenuOnClick={false}
-            onClick={() => toggle(category.id)}
-            leftSection={
-              <Checkbox
-                size="xs"
-                checked={value.includes(category.id)}
-                readOnly
-                tabIndex={-1}
-              />
-            }
+    <Group gap={4} wrap="nowrap">
+      <Menu
+        withinPortal
+        shadow="sm"
+        width={240}
+        position="bottom-start"
+        zIndex={2000}
+      >
+        <Menu.Target>
+          <Button
+            className={classes.trigger}
+            variant="default"
+            size="sm"
+            justify="space-between"
+            leftSection={<IconWorld size={16} />}
+            rightSection={<IconChevronDown size={14} />}
           >
-            {category.title}
-          </Menu.Item>
-        ))}
-      </Menu.Dropdown>
-    </Menu>
+            {label}
+          </Button>
+        </Menu.Target>
+        <Menu.Dropdown>
+          {categories.map((category) => (
+            <Menu.Item
+              key={category.id}
+              closeMenuOnClick={false}
+              onClick={() => toggle(category.id)}
+              leftSection={
+                <Checkbox
+                  size="xs"
+                  checked={value.includes(category.id)}
+                  readOnly
+                  tabIndex={-1}
+                />
+              }
+            >
+              {category.title}
+            </Menu.Item>
+          ))}
+        </Menu.Dropdown>
+      </Menu>
+      {value.length > 0 && (
+        <ActionIcon
+          variant="subtle"
+          color="gray"
+          size="sm"
+          aria-label="Clear categories"
+          onClick={() => onChange([])}
+        >
+          <IconX size={14} />
+        </ActionIcon>
+      )}
+    </Group>
   )
 }

@@ -12,6 +12,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
   color: inherit;
   text-decoration: none;
 }
@@ -25,6 +26,7 @@
 .nav {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
   gap: 2px;
   padding: 3px;
   border-radius: 999px;
@@ -35,12 +37,13 @@
   display: inline-flex;
   align-items: center;
   height: 30px;
-  padding: 0 14px;
+  padding: 0 10px;
   border-radius: 999px;
   font-size: var(--mantine-font-size-sm);
   font-weight: 500;
   color: var(--mantine-color-gray-7);
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .link:hover {
@@ -59,4 +62,26 @@
 .link:focus-visible {
   outline: 2px solid var(--mantine-color-navy-5);
   outline-offset: 2px;
+}
+
+.labelShort {
+  display: inline;
+}
+
+.labelFull {
+  display: none;
+}
+
+@media (min-width: 36em) {
+  .link {
+    padding: 0 14px;
+  }
+
+  .labelShort {
+    display: none;
+  }
+
+  .labelFull {
+    display: inline;
+  }
 }

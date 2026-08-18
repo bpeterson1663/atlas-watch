@@ -2,6 +2,7 @@ import {
   Anchor,
   Box,
   Badge,
+  Button,
   Group,
   Paper,
   SimpleGrid,
@@ -11,6 +12,7 @@ import {
   Title,
 } from '@mantine/core'
 import { IconExternalLink } from '@tabler/icons-react'
+import { useState } from 'react'
 import type { EventDetailView, EventObservation } from '../types/event'
 import { categoryStyle } from '../lib/category'
 import { formatUtc } from '../lib/date'
@@ -98,13 +100,20 @@ function SourceList({ sources }: { sources: EventDetailView['sources'] }) {
   )
 }
 
+const HISTORY_PREVIEW_LIMIT = 5
+
 function HistoryList({ observations }: { observations: EventObservation[] }) {
+  const [expanded, setExpanded] = useState(false)
   const newestFirst = [...observations].reverse()
+  const visible = expanded
+    ? newestFirst
+    : newestFirst.slice(0, HISTORY_PREVIEW_LIMIT)
+  const hiddenCount = newestFirst.length - visible.length
 
   return (
     <Stack gap="xs">
       <SectionLabel>Event history (latest first)</SectionLabel>
-      {newestFirst.map((observation, displayIndex) => {
+      {visible.map((observation, displayIndex) => {
         const index = observations.length - 1 - displayIndex
         const color = observationColor(index, observations.length)
         const hasCoords =
@@ -140,6 +149,16 @@ function HistoryList({ observations }: { observations: EventObservation[] }) {
           </Group>
         )
       })}
+      {newestFirst.length > HISTORY_PREVIEW_LIMIT && (
+        <Button
+          variant="subtle"
+          color="navy"
+          size="compact-sm"
+          onClick={() => setExpanded((current) => !current)}
+        >
+          {expanded ? 'Show less' : `View more (${hiddenCount} more)`}
+        </Button>
+      )}
     </Stack>
   )
 }

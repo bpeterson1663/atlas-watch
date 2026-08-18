@@ -7,10 +7,12 @@ import classes from './Header.module.css'
 function HeaderNavLink({
   to,
   label,
+  shortLabel,
   matchPath,
 }: {
   to: string
   label: string
+  shortLabel?: string
   matchPath: string
 }) {
   const location = useLocation()
@@ -19,10 +21,12 @@ function HeaderNavLink({
   return (
     <Link
       to={to}
+      aria-label={label}
       className={`${classes.link}${active ? ` ${classes.linkActive}` : ''}`}
       aria-current={active ? 'page' : undefined}
     >
-      {label}
+      <span className={classes.labelFull}>{label}</span>
+      <span className={classes.labelShort}>{shortLabel ?? label}</span>
     </Link>
   )
 }
@@ -51,6 +55,7 @@ export function Header() {
           <HeaderNavLink
             to="/explorer"
             label="Event Explorer"
+            shortLabel="Explorer"
             matchPath="/explorer"
           />
         </nav>
