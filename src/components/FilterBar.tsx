@@ -8,10 +8,14 @@ import {
   Text,
   TextInput,
 } from '@mantine/core'
+import { useDebouncedValue } from '@mantine/hooks'
 import { IconSearch, IconWorld } from '@tabler/icons-react'
+import { useEffect, useRef, useState } from 'react'
 import type { Category } from '../types/category'
 import type { DaysFilter, EventFilters, StatusFilter } from '../types/filter'
 import layout from '../styles/layout.module.css'
+
+const SEARCH_DEBOUNCE_MS = 300
 
 interface Props {
   mode: 'dashboard' | 'explorer'
@@ -32,6 +36,25 @@ export function FilterBar({
   eventsLoading = false,
   onChange,
 }: Props) {
+  const [query, setQuery] = useState(filters.q)
+  const [debouncedQuery] = useDebouncedValue(query, SEARCH_DEBOUNCE_MS)
+  const lastEmittedQuery = useRef(filters.q)
+
+  useEffect(() => {
+    if (filters.q !== lastEmittedQuery.current) {
+      lastEmittedQuery.current = filters.q
+      setQuery(filters.q)
+    }
+  }, [filters.q])
+
+  useEffect(() => {
+    if (debouncedQuery === lastEmittedQuery.current) {
+      return
+    }
+    lastEmittedQuery.current = debouncedQuery
+    onChange({ q: debouncedQuery })
+  }, [debouncedQuery, onChange])
+
   const categoryOptions = categories.map((category) => ({
     value: category.id,
     label: category.title,
@@ -46,8 +69,8 @@ export function FilterBar({
               className={layout.searchInput}
               placeholder="Search events or locations..."
               leftSection={<IconSearch size={16} />}
-              value={filters.q}
-              onChange={(event) => onChange({ q: event.currentTarget.value })}
+              value={query}
+              onChange={(event) => setQuery(event.currentTarget.value)}
             />
           )}
 

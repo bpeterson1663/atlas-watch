@@ -61,19 +61,6 @@ export function EventExplorerTable({ events, selectedId, onSelect }: Props) {
             All times in UTC
           </Text>
         </Group>
-        <Group gap="xs" wrap="nowrap">
-          <Text size="xs" c="dimmed">
-            Sort by
-          </Text>
-          <Select
-            size="xs"
-            w={180}
-            value="latest"
-            data={[{ value: 'latest', label: 'Latest Observation' }]}
-            readOnly
-            comboboxProps={{ zIndex: 1000 }}
-          />
-        </Group>
       </Group>
 
       <div className={classes.tableWrap}>
