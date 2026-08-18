@@ -1,7 +1,7 @@
 import { Box, ScrollArea, Skeleton } from '@mantine/core'
 import { EventList } from './EventList'
-import { normalizeEvents } from './utils/normalize'
-import { useEvents } from './useEvents'
+import { normalizeEvents } from '../lib/normalize'
+import { useEvents } from '../hooks/useEvents'
 import { EventMap } from './EventMap'
 import { useState } from 'react'
 

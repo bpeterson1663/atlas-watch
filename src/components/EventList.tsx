@@ -1,5 +1,5 @@
 import { Stack, Text } from '@mantine/core'
-import type { EventView } from '../../shared/types/event'
+import type { EventView } from '../types/event'
 import { EventCard } from './EventCard'
 
 interface Props {

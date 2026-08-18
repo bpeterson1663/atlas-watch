@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import type { EonetEvent } from '../../shared/types/event'
-import type { Status } from '../../shared/types/status'
-import { getEvents } from './api'
-import { isAbortError } from '../../shared/api/error'
+import type { EonetEvent } from '../types/event'
+import type { Status } from '../types/status'
+import { getEvents } from '../api/eonet'
+import { isAbortError } from '../api/error'
 
 interface EventsState {
   message: string

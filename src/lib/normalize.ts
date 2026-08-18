@@ -2,7 +2,7 @@ import type {
   EonetEvent,
   EonetGeometry,
   EventView,
-} from '../../../shared/types/event'
+} from '../types/event'
 
 export function normalizeEvent(event: EonetEvent): EventView {
   const last = event.geometry[event.geometry.length - 1]

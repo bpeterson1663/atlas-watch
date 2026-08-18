@@ -1,5 +1,5 @@
-import { apiGet } from '../../shared/api/client'
-import type { EonetEvent } from '../../shared/types/event'
+import { apiGet } from './client'
+import type { EonetEvent } from '../types/event'
 
 interface EonetEventsResponse {
   title: string

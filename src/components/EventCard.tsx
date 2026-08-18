@@ -1,8 +1,8 @@
 import { Badge, Card, Group, Stack, Text, ThemeIcon } from '@mantine/core'
-import type { EventView } from '../../shared/types/event'
-import { categoryStyle } from './utils/category'
+import type { EventView } from '../types/event'
+import { categoryStyle } from '../lib/category'
 import { IconCalendar, IconMapPin } from '@tabler/icons-react'
-import { formatUtc } from '../../shared/utils/date'
+import { formatUtc } from '../lib/date'
 
 interface Props {
   event: EventView

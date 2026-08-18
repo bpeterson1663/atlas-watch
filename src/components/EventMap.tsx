@@ -5,8 +5,8 @@ import {
   Tooltip,
   useMap,
 } from 'react-leaflet'
-import type { EventView } from '../../shared/types/event'
-import { categoryStyle } from './utils/category'
+import type { EventView } from '../types/event'
+import { categoryStyle } from '../lib/category'
 import { useEffect } from 'react'
 
 type EventMapProps = {

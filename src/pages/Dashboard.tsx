@@ -1,5 +1,5 @@
 import { Group } from '@mantine/core'
-import { EventsSection } from '../features/events/EventsSection'
+import { EventsSection } from '../components/EventsSection'
 
 export function Dashboard() {
   return (

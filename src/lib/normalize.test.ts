@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { EonetEvent, EonetGeometry } from '../../../shared/types/event'
+import type { EonetEvent, EonetGeometry } from '../types/event'
 import { normalizeEvent, normalizeEvents } from './normalize'
 
 function event(overrides: Partial<EonetEvent> = {}): EonetEvent {
