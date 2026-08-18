@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import type { EonetEvent, EonetGeometry } from '../types/event'
-import { normalizeEvent, normalizeEvents } from './normalize'
+import {
+  normalizeEvent,
+  normalizeEventDetail,
+  normalizeEvents,
+} from './normalize'
 
 function event(overrides: Partial<EonetEvent> = {}): EonetEvent {
   return {
@@ -127,5 +131,66 @@ describe('normalizeEvents', () => {
     ])
 
     expect(views.map((view) => view.id)).toEqual(['newer', 'older'])
+  })
+})
+
+describe('normalizeEventDetail', () => {
+  it('uses first and last geometry dates after sorting', () => {
+    const view = normalizeEventDetail(
+      event({
+        geometry: [
+          point(19, -156, '2026-08-16T06:00:00Z'),
+          point(18, -155, '2026-08-14T00:00:00Z'),
+        ],
+      }),
+    )
+
+    expect(view.firstDate).toBe('2026-08-14T00:00:00Z')
+    expect(view.lastDate).toBe('2026-08-16T06:00:00Z')
+    expect(view.observations).toHaveLength(2)
+  })
+
+  it('takes the maximum magnitude and ignores nulls', () => {
+    const view = normalizeEventDetail(
+      event({
+        geometry: [
+          {
+            ...point(18, -155, '2026-08-14T00:00:00Z'),
+            magnitudeValue: 35,
+            magnitudeUnit: 'kts',
+          },
+          {
+            ...point(19, -156, '2026-08-15T00:00:00Z'),
+            magnitudeValue: null,
+            magnitudeUnit: null,
+          },
+          {
+            ...point(20, -157, '2026-08-16T00:00:00Z'),
+            magnitudeValue: 60,
+            magnitudeUnit: 'kts',
+          },
+        ],
+      }),
+    )
+
+    expect(view.maxMagnitude).toEqual({ value: 60, unit: 'kts' })
+  })
+
+  it('keeps a null description instead of inventing copy', () => {
+    expect(normalizeEventDetail(event()).description).toBeNull()
+    expect(
+      normalizeEventDetail(event({ description: '  A brief summary.  ' }))
+        .description,
+    ).toBe('A brief summary.')
+  })
+
+  it('handles empty geometry', () => {
+    const view = normalizeEventDetail(event({ geometry: [], sources: [] }))
+
+    expect(view.firstDate).toBe('')
+    expect(view.lastDate).toBe('')
+    expect(view.observations).toEqual([])
+    expect(view.maxMagnitude).toBeNull()
+    expect(view.sources).toEqual([])
   })
 })

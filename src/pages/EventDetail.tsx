@@ -2,6 +2,8 @@ import { Anchor, Group, Skeleton, Stack, Text, Title } from '@mantine/core'
 import { IconArrowLeft } from '@tabler/icons-react'
 import { Link, useLocation, useParams } from 'react-router-dom'
 import { useEvent } from '../hooks/useEvent'
+import { normalizeEventDetail } from '../lib/normalize'
+import { EventDetailPanel } from '../components/EventDetailPanel'
 
 export function EventDetail() {
   const { eventId } = useParams()
@@ -14,8 +16,7 @@ export function EventDetail() {
     return (
       <Stack gap="md">
         <BackLink to={backTo} />
-        <Skeleton height={28} width={280} />
-        <Skeleton height={16} width={180} />
+        <Skeleton height={160} radius="md" />
       </Stack>
     )
   }
@@ -30,10 +31,12 @@ export function EventDetail() {
     )
   }
 
+  const view = normalizeEventDetail(event)
+
   return (
     <Stack gap="md">
       <BackLink to={backTo} />
-      <Title order={3}>{event.title}</Title>
+      <EventDetailPanel event={view} />
     </Stack>
   )
 }

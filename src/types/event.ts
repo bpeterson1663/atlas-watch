@@ -29,3 +29,25 @@ export interface EventView {
   lastLat: number | null
   lastLng: number | null
 }
+
+export interface EventObservation {
+  date: string
+  lat: number | null
+  lng: number | null
+  magnitudeValue: number | null
+  magnitudeUnit: string | null
+}
+
+export interface EventDetailView {
+  id: string
+  title: string
+  description: string | null
+  categoryId: string
+  categoryTitle: string
+  isOpen: boolean
+  firstDate: string
+  lastDate: string
+  observations: EventObservation[]
+  sources: { id: string; url: string }[]
+  maxMagnitude: { value: number; unit: string } | null
+}

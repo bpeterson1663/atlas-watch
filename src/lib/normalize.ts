@@ -1,4 +1,10 @@
-import type { EonetEvent, EonetGeometry, EventView } from '../types/event'
+import type {
+  EonetEvent,
+  EonetGeometry,
+  EventDetailView,
+  EventObservation,
+  EventView,
+} from '../types/event'
 
 export function normalizeEvent(event: EonetEvent): EventView {
   const last = event.geometry[event.geometry.length - 1]
@@ -25,6 +31,59 @@ export function normalizeEvents(events: EonetEvent[]): EventView[] {
   return events
     .map(normalizeEvent)
     .sort((a, b) => b.lastDate.localeCompare(a.lastDate))
+}
+
+export function normalizeEventDetail(event: EonetEvent): EventDetailView {
+  const observations: EventObservation[] = event.geometry
+    .map((geometry) => {
+      const point = pointFromGeometry(geometry)
+      const magnitudeValue = Number.isFinite(geometry.magnitudeValue)
+        ? geometry.magnitudeValue
+        : null
+
+      return {
+        date: geometry.date ?? '',
+        lat: point?.lat ?? null,
+        lng: point?.lng ?? null,
+        magnitudeValue,
+        magnitudeUnit: geometry.magnitudeUnit,
+      }
+    })
+    .sort((a, b) => a.date.localeCompare(b.date))
+
+  return {
+    id: event.id,
+    title: event.title,
+    description: event.description?.trim() || null,
+    categoryId: event.categories[0]?.id ?? 'unknown',
+    categoryTitle: event.categories[0]?.title ?? 'Unknown',
+    isOpen: event.closed == null,
+    firstDate: observations[0]?.date ?? '',
+    lastDate: observations[observations.length - 1]?.date ?? '',
+    observations,
+    sources: event.sources ?? [],
+    maxMagnitude: maxMagnitude(observations),
+  }
+}
+
+function maxMagnitude(
+  observations: EventObservation[],
+): { value: number; unit: string } | null {
+  let max: { value: number; unit: string } | null = null
+
+  for (const observation of observations) {
+    if (observation.magnitudeValue == null) {
+      continue
+    }
+    if (max == null || observation.magnitudeValue > max.value) {
+      max = {
+        value: observation.magnitudeValue,
+        unit: observation.magnitudeUnit ?? '',
+      }
+    }
+  }
+
+  return max
 }
 
 function formatCoordinates(geometry: EonetGeometry | undefined): string | null {
