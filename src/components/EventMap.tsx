@@ -15,11 +15,28 @@ type EventMapProps = {
   onSelect: (id: string) => void
 }
 
+function coordinatesOf(event: EventView): [number, number] | null {
+  if (Number.isFinite(event.lastLat) && Number.isFinite(event.lastLng)) {
+    return [event.lastLat as number, event.lastLng as number]
+  }
+  return null
+}
+
 function FlyToSelected({ event }: { event: EventView | undefined }) {
   const map = useMap()
   useEffect(() => {
-    if (event?.lastLat == null || event.lastLng == null) return
-    map.flyTo([event.lastLat, event.lastLng], Math.max(map.getZoom(), 4), {
+    const point = event ? coordinatesOf(event) : null
+    if (!point) {
+      return
+    }
+
+    const size = map.getSize()
+    if (size.x === 0 || size.y === 0) {
+      return
+    }
+
+    const zoom = map.getZoom()
+    map.flyTo(point, Number.isFinite(zoom) ? Math.max(zoom, 4) : 4, {
       duration: 0.6,
     })
   }, [event, map])
@@ -42,12 +59,15 @@ export function EventMap({ events, selectedId, onSelect }: EventMapProps) {
       />
       <FlyToSelected event={selected} />
       {events.map((event) => {
-        if (event.lastLat == null || event.lastLng == null) return null
+        const point = coordinatesOf(event)
+        if (!point) {
+          return null
+        }
         const selectedMark = event.id === selectedId
         return (
           <CircleMarker
             key={event.id}
-            center={[event.lastLat, event.lastLng]}
+            center={point}
             radius={selectedMark ? 10 : 6}
             pathOptions={{
               color: selectedMark

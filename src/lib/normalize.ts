@@ -1,8 +1,4 @@
-import type {
-  EonetEvent,
-  EonetGeometry,
-  EventView,
-} from '../types/event'
+import type { EonetEvent, EonetGeometry, EventView } from '../types/event'
 
 export function normalizeEvent(event: EonetEvent): EventView {
   const last = event.geometry[event.geometry.length - 1]
@@ -81,7 +77,7 @@ function pointFromGeometry(
 function isLngLat(value: unknown): value is [number, number] {
   return (
     Array.isArray(value) &&
-    typeof value[0] === 'number' &&
-    typeof value[1] === 'number'
+    Number.isFinite(value[0]) &&
+    Number.isFinite(value[1])
   )
 }

@@ -3,6 +3,7 @@ import type { EonetEvent } from '../types/event'
 import type { Status } from '../types/status'
 import { getEvents } from '../api/eonet'
 import { isAbortError } from '../api/error'
+import type { EventFilters } from '../types/filter'
 
 interface EventsState {
   message: string
@@ -10,7 +11,9 @@ interface EventsState {
   status: Status
 }
 
-export function useEvents(): EventsState {
+export function useEvents(
+  filters: Pick<EventFilters, 'status' | 'days' | 'categories'>,
+): EventsState {
   const [state, setState] = useState<EventsState>({
     message: '',
     events: [],
@@ -22,7 +25,7 @@ export function useEvents(): EventsState {
 
     async function loadEvents() {
       try {
-        const { events } = await getEvents(controller.signal)
+        const { events } = await getEvents(filters, controller.signal)
 
         setState({ message: '', events, status: 'success' })
       } catch (err) {
@@ -41,7 +44,7 @@ export function useEvents(): EventsState {
     return () => {
       controller.abort()
     }
-  }, [])
+  }, [filters.status, filters.days, filters.categories.join(',')])
 
   return state
 }
