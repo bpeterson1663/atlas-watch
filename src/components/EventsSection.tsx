@@ -1,13 +1,16 @@
-import { Box, Group, ScrollArea, Skeleton, Stack } from '@mantine/core'
+import { Group, ScrollArea, Skeleton, Stack } from '@mantine/core'
 import { useMediaQuery } from '@mantine/hooks'
-import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { EventList } from './EventList'
 import { normalizeEvents } from '../lib/normalize'
 import { filterEventsBySearch } from '../lib/filters'
 import { EventMap } from './EventMap'
+import { MapPane } from './MapPane'
 import type { EventFilters } from '../types/filter'
 import type { EonetEvent } from '../types/event'
 import type { Status } from '../types/status'
+
+const MOBILE_MAP_HEIGHT = 280
 
 interface Props {
   filters: EventFilters
@@ -17,7 +20,7 @@ interface Props {
 }
 
 export function EventsSection({ filters, events, status, message }: Props) {
-  const isDesktop = useMediaQuery('(min-width: 62em)', true)
+  const isDesktop = useMediaQuery('(min-width: 62em)')
   const [selectedId, setSelectedId] = useState<string | null>(null)
 
   const views = useMemo(() => {
@@ -77,7 +80,7 @@ export function EventsSection({ filters, events, status, message }: Props) {
         style={{ minHeight: 0 }}
       >
         <MapPane>{mapContent}</MapPane>
-        <ScrollArea flex={1} h="100%">
+        <ScrollArea flex={1} h="100%" type="hover">
           {listContent}
         </ScrollArea>
       </Group>
@@ -86,28 +89,10 @@ export function EventsSection({ filters, events, status, message }: Props) {
 
   return (
     <Stack gap="md" flex={1} style={{ minHeight: 0 }}>
-      <MapPane h={280}>{mapContent}</MapPane>
-      <ScrollArea flex={1} style={{ minHeight: 240 }}>
+      <MapPane fixedHeight={MOBILE_MAP_HEIGHT}>{mapContent}</MapPane>
+      <ScrollArea flex={1} style={{ minHeight: 240 }} type="hover">
         {listContent}
       </ScrollArea>
     </Stack>
-  )
-}
-
-function MapPane({
-  children,
-  h = '100%',
-}: {
-  children: ReactNode
-  h?: number | string
-}) {
-  return (
-    <Box
-      flex={2}
-      h={h}
-      style={{ borderRadius: 8, overflow: 'hidden', minHeight: 0 }}
-    >
-      {children}
-    </Box>
   )
 }

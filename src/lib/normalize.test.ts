@@ -43,7 +43,7 @@ describe('normalizeEvent', () => {
     expect(view.categoryTitle).toBe('Wildfires')
   })
 
-  it('falls back to hemisphere coordinates when the title has no place', () => {
+  it('falls back to coordinates when the title has no place', () => {
     const view = normalizeEvent(event())
 
     expect(view.locationLabel).toBe('17.90°N, 155.00°W')
@@ -57,30 +57,6 @@ describe('normalizeEvent', () => {
     )
 
     expect(view.locationLabel).toBe('36.87°S, 174.76°E')
-  })
-
-  it('uses the first coordinate of a polygon when there is no place in the title', () => {
-    const view = normalizeEvent(
-      event({
-        geometry: [
-          {
-            date: '2026-08-01T00:00:00Z',
-            type: 'Polygon',
-            coordinates: [
-              [
-                [-71.4, -36.9],
-                [-71.3, -36.9],
-                [-71.4, -36.9],
-              ],
-            ],
-            magnitudeValue: null,
-            magnitudeUnit: null,
-          },
-        ],
-      }),
-    )
-
-    expect(view.locationLabel).toBe('36.90°S, 71.40°W')
   })
 
   it('treats a missing closed date as open', () => {

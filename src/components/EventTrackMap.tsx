@@ -3,12 +3,15 @@ import { useEffect } from 'react'
 import {
   CircleMarker,
   MapContainer,
+  Polygon,
   Polyline,
   TileLayer,
   Tooltip,
   useMap,
 } from 'react-leaflet'
+import { ResizeMap } from './ResizeMap'
 import type { EventObservation } from '../types/event'
+import { categoryStyle } from '../lib/category'
 import { formatUtc } from '../lib/date'
 import {
   formatLatLng,
@@ -18,19 +21,25 @@ import {
 
 interface Props {
   observations: EventObservation[]
+  categoryId: string
 }
 
-export function EventTrackMap({ observations }: Props) {
-  const points = locatedObservations(observations)
-  const latLngs = points.map(
+export function EventTrackMap({ observations, categoryId }: Props) {
+  const { hex } = categoryStyle(categoryId)
+  const trackPoints = locatedObservations(observations)
+  const trackLatLngs = trackPoints.map(
     (point) => [point.lat, point.lng] as [number, number],
   )
+  const polygonLatLngs = observations.flatMap(
+    (observation) => observation.polygon ?? [],
+  )
+  const boundsPoints = [...trackLatLngs, ...polygonLatLngs]
 
   return (
     <div style={{ position: 'relative', height: '100%', width: '100%' }}>
       <MapContainer
-        center={latLngs[0] ?? [20, 0]}
-        zoom={latLngs.length === 1 ? 4 : 2}
+        center={boundsPoints[0] ?? [20, 0]}
+        zoom={boundsPoints.length === 1 ? 4 : 2}
         style={{ height: '100%', width: '100%' }}
         scrollWheelZoom
       >
@@ -38,16 +47,39 @@ export function EventTrackMap({ observations }: Props) {
           attribution="&copy; OpenStreetMap &copy; CARTO"
           url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
         />
-        <FitBounds points={latLngs} />
-        {latLngs.length > 1 && (
+        <ResizeMap />
+        <FitBounds points={boundsPoints} />
+        {observations.map((observation, index) => {
+          if (!observation.polygon?.length) {
+            return null
+          }
+
+          return (
+            <Polygon
+              key={`${observation.date}-${index}-polygon`}
+              positions={observation.polygon}
+              pathOptions={{
+                color: hex,
+                fillColor: hex,
+                fillOpacity: 0.25,
+                weight: 2,
+              }}
+            />
+          )
+        })}
+        {trackLatLngs.length > 1 && (
           <Polyline
-            positions={latLngs}
+            positions={trackLatLngs}
             pathOptions={{ color: '#1b365d', weight: 2, opacity: 0.7 }}
           />
         )}
-        {points.map((point, index) => {
-          const color = observationColor(index, points.length)
-          const isLatest = index === points.length - 1
+        {trackPoints.map((point, index) => {
+          if (point.polygon?.length) {
+            return null
+          }
+
+          const color = observationColor(index, trackPoints.length)
+          const isLatest = index === trackPoints.length - 1
           return (
             <CircleMarker
               key={`${point.date}-${index}`}
@@ -70,10 +102,10 @@ export function EventTrackMap({ observations }: Props) {
           )
         })}
       </MapContainer>
-      {points.length > 1 && (
+      {trackPoints.length > 1 && (
         <ObservationLegend
-          firstDate={points[0].date}
-          lastDate={points[points.length - 1].date}
+          firstDate={trackPoints[0].date}
+          lastDate={trackPoints[trackPoints.length - 1].date}
         />
       )}
     </div>
@@ -85,17 +117,35 @@ function FitBounds({ points }: { points: [number, number][] }) {
   const pointsKey = points.map((point) => point.join(',')).join('|')
 
   useEffect(() => {
-    const size = map.getSize()
-    if (size.x === 0 || size.y === 0 || points.length === 0) {
+    function fit() {
+      const size = map.getSize()
+      if (size.x === 0 || size.y === 0 || points.length === 0) {
+        return false
+      }
+
+      if (points.length === 1) {
+        map.setView(points[0], 4)
+        return true
+      }
+
+      map.fitBounds(points, { padding: [28, 28], maxZoom: 8 })
+      return true
+    }
+
+    map.invalidateSize()
+
+    if (fit()) {
       return
     }
 
-    if (points.length === 1) {
-      map.setView(points[0], 4)
-      return
-    }
+    const retry = window.setTimeout(() => {
+      map.invalidateSize()
+      fit()
+    }, 100)
 
-    map.fitBounds(points, { padding: [28, 28], maxZoom: 8 })
+    return () => {
+      window.clearTimeout(retry)
+    }
   }, [map, pointsKey])
 
   return null

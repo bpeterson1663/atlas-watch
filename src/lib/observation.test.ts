@@ -15,6 +15,7 @@ function observation(
     lng: -80,
     magnitudeValue: null,
     magnitudeUnit: null,
+    polygon: null,
     ...overrides,
   }
 }

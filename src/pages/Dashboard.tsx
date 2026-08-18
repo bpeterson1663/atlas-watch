@@ -1,4 +1,4 @@
-import { Stack } from '@mantine/core'
+import { Box, Stack } from '@mantine/core'
 import { useMemo } from 'react'
 import { EventsSection } from '../components/EventsSection'
 import { useEventFilters } from '../hooks/useEventFilters'
@@ -35,12 +35,17 @@ export function Dashboard() {
         eventsLoading={eventsStatus === 'loading'}
         onChange={setFilters}
       />
-      <EventsSection
-        filters={filters}
-        events={events}
-        status={eventsStatus}
-        message={message}
-      />
+      <Box
+        flex={1}
+        style={{ minHeight: 0, display: 'flex', flexDirection: 'column' }}
+      >
+        <EventsSection
+          filters={filters}
+          events={events}
+          status={eventsStatus}
+          message={message}
+        />
+      </Box>
     </Stack>
   )
 }

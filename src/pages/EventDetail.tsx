@@ -1,6 +1,5 @@
 import {
   Anchor,
-  Box,
   Center,
   Group,
   ScrollArea,
@@ -15,38 +14,52 @@ import type { ReactNode } from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
 import { EventDetailPanel } from '../components/EventDetailPanel'
 import { EventTrackMap } from '../components/EventTrackMap'
+import { MapPane } from '../components/MapPane'
 import { useEvent } from '../hooks/useEvent'
 import { locatedObservations } from '../lib/observation'
 import { normalizeEventDetail } from '../lib/normalize'
 
+const MOBILE_MAP_HEIGHT = 280
+
 export function EventDetail() {
   const { eventId } = useParams()
   const location = useLocation()
-  const isDesktop = useMediaQuery('(min-width: 62em)', true)
+  const isDesktop = useMediaQuery('(min-width: 62em)')
   const { event, status, message } = useEvent(eventId)
 
   const backTo = { pathname: '/', search: location.search }
 
   if (status === 'loading') {
     return (
-      <Stack
-        gap="md"
-        flex={1}
-        h={{ base: 'auto', md: 'calc(100vh - 104px)' }}
-        style={{ minHeight: 0 }}
-      >
-        <BackLink to={backTo} />
-        <Group
-          align="stretch"
-          grow
-          wrap="nowrap"
-          flex={1}
-          style={{ minHeight: 0 }}
-        >
-          <Skeleton height="100%" mih={280} radius="md" />
-          <Skeleton height="100%" mih={280} radius="md" visibleFrom="md" />
-        </Group>
-      </Stack>
+      <DetailLayout backTo={backTo} isDesktop={isDesktop}>
+        {isDesktop ? (
+          <Group
+            align="stretch"
+            grow
+            wrap="nowrap"
+            flex={1}
+            style={{ minHeight: 0 }}
+          >
+            <Skeleton
+              height="100%"
+              mih={MOBILE_MAP_HEIGHT}
+              radius="md"
+              flex={2}
+            />
+            <Skeleton
+              height="100%"
+              mih={MOBILE_MAP_HEIGHT}
+              radius="md"
+              flex={1}
+            />
+          </Group>
+        ) : (
+          <Stack gap="md" flex={1} style={{ minHeight: 0 }}>
+            <Skeleton height={MOBILE_MAP_HEIGHT} radius="md" />
+            <Skeleton height={240} radius="md" />
+          </Stack>
+        )}
+      </DetailLayout>
     )
   }
 
@@ -69,23 +82,14 @@ export function EventDetail() {
         <Text c="dimmed">Location unavailable</Text>
       </Center>
     ) : (
-      <EventTrackMap observations={view.observations} />
+      <EventTrackMap
+        observations={view.observations}
+        categoryId={view.categoryId}
+      />
     )
 
-  const panel = (
-    <ScrollArea h="100%" type="hover">
-      <EventDetailPanel event={view} />
-    </ScrollArea>
-  )
-
   return (
-    <Stack
-      gap="md"
-      flex={1}
-      h={{ base: 'auto', md: 'calc(100vh - 104px)' }}
-      style={{ minHeight: 0 }}
-    >
-      <BackLink to={backTo} />
+    <DetailLayout backTo={backTo} isDesktop={isDesktop}>
       {isDesktop ? (
         <Group
           align="stretch"
@@ -95,38 +99,41 @@ export function EventDetail() {
           style={{ minHeight: 0 }}
         >
           <MapPane>{mapContent}</MapPane>
-          {panel}
+          <ScrollArea flex={1} h="100%" type="hover">
+            <EventDetailPanel event={view} />
+          </ScrollArea>
         </Group>
       ) : (
         <Stack gap="md" flex={1} style={{ minHeight: 0 }}>
-          <MapPane h={280}>{mapContent}</MapPane>
-          {panel}
+          <MapPane fixedHeight={MOBILE_MAP_HEIGHT}>{mapContent}</MapPane>
+          <ScrollArea flex={1} style={{ minHeight: 240 }} type="hover">
+            <EventDetailPanel event={view} />
+          </ScrollArea>
         </Stack>
       )}
-    </Stack>
+    </DetailLayout>
   )
 }
 
-function MapPane({
+function DetailLayout({
+  backTo,
+  isDesktop,
   children,
-  h = '100%',
 }: {
+  backTo: { pathname: string; search: string }
+  isDesktop: boolean | undefined
   children: ReactNode
-  h?: number | string
 }) {
   return (
-    <Box
-      flex={2}
-      h={h}
-      style={{
-        borderRadius: 8,
-        overflow: 'hidden',
-        minHeight: 0,
-        border: '1px solid var(--mantine-color-gray-3)',
-      }}
+    <Stack
+      gap="md"
+      flex={1}
+      h={isDesktop ? 'calc(100vh - 104px)' : 'auto'}
+      style={{ minHeight: 0 }}
     >
+      <BackLink to={backTo} />
       {children}
-    </Box>
+    </Stack>
   )
 }
 

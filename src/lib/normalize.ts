@@ -5,13 +5,12 @@ import type {
   EventObservation,
   EventView,
 } from '../types/event'
+import { latLngFromGeometry, latLngsFromPolygonRing } from './coordinates'
+import { formatLatLng } from './observation'
 
 export function normalizeEvent(event: EonetEvent): EventView {
   const last = event.geometry[event.geometry.length - 1]
-  const comma = event.title.indexOf(',')
-  const fromTitle = comma !== -1 ? event.title.slice(comma + 1).trim() : ''
-
-  const point = pointFromGeometry(last)
+  const point = latLngFromGeometry(last)
 
   return {
     id: event.id,
@@ -23,7 +22,9 @@ export function normalizeEvent(event: EonetEvent): EventView {
     lastLat: point?.lat ?? null,
     lastLng: point?.lng ?? null,
     locationLabel:
-      fromTitle || formatCoordinates(last) || 'Location unavailable',
+      placeFromTitle(event.title) ||
+      formatGeometryLocation(last) ||
+      'Location unavailable',
   }
 }
 
@@ -36,7 +37,7 @@ export function normalizeEvents(events: EonetEvent[]): EventView[] {
 export function normalizeEventDetail(event: EonetEvent): EventDetailView {
   const observations: EventObservation[] = event.geometry
     .map((geometry) => {
-      const point = pointFromGeometry(geometry)
+      const point = latLngFromGeometry(geometry)
       const magnitudeValue = Number.isFinite(geometry.magnitudeValue)
         ? geometry.magnitudeValue
         : null
@@ -47,6 +48,7 @@ export function normalizeEventDetail(event: EonetEvent): EventDetailView {
         lng: point?.lng ?? null,
         magnitudeValue,
         magnitudeUnit: geometry.magnitudeUnit,
+        polygon: polygonFromGeometry(geometry),
       }
     })
     .sort((a, b) => a.date.localeCompare(b.date))
@@ -64,6 +66,38 @@ export function normalizeEventDetail(event: EonetEvent): EventDetailView {
     sources: event.sources ?? [],
     maxMagnitude: maxMagnitude(observations),
   }
+}
+
+function placeFromTitle(title: string): string {
+  const comma = title.indexOf(',')
+  return comma === -1 ? '' : title.slice(comma + 1).trim()
+}
+
+function formatGeometryLocation(
+  geometry: EonetGeometry | undefined,
+): string | null {
+  const point = latLngFromGeometry(geometry)
+  return point ? formatLatLng(point.lat, point.lng) : null
+}
+
+function polygonFromGeometry(
+  geometry: EonetGeometry,
+): [number, number][] | null {
+  if (geometry.type !== 'Polygon') {
+    return null
+  }
+
+  const ring = geometry.coordinates[0]
+  if (!Array.isArray(ring)) {
+    return null
+  }
+
+  const latLngs = latLngsFromPolygonRing(ring)
+  if (latLngs.length === 0) {
+    return null
+  }
+
+  return latLngs.map((point) => [point.lat, point.lng])
 }
 
 function maxMagnitude(
@@ -84,59 +118,4 @@ function maxMagnitude(
   }
 
   return max
-}
-
-function formatCoordinates(geometry: EonetGeometry | undefined): string | null {
-  const point = pointFromGeometry(geometry)
-  if (point == null) {
-    return null
-  }
-
-  const { lat, lng } = point
-  return `${formatHemisphere(lat, 'N', 'S')}, ${formatHemisphere(lng, 'E', 'W')}`
-}
-
-function formatHemisphere(
-  value: number,
-  positive: string,
-  negative: string,
-): string {
-  const hemi = value >= 0 ? positive : negative
-  return `${Math.abs(value).toFixed(2)}°${hemi}`
-}
-
-function pointFromGeometry(
-  geometry: EonetGeometry | undefined,
-): { lat: number; lng: number } | null {
-  if (!geometry) {
-    return null
-  }
-
-  if (geometry.type === 'Point' && isLngLat(geometry.coordinates)) {
-    const [lng, lat] = geometry.coordinates
-    return { lat, lng }
-  }
-
-  if (geometry.type === 'Polygon') {
-    const ring = geometry.coordinates[0]
-    if (!Array.isArray(ring)) {
-      return null
-    }
-
-    const first = ring[0]
-    if (isLngLat(first)) {
-      const [lng, lat] = first
-      return { lat, lng }
-    }
-  }
-
-  return null
-}
-
-function isLngLat(value: unknown): value is [number, number] {
-  return (
-    Array.isArray(value) &&
-    Number.isFinite(value[0]) &&
-    Number.isFinite(value[1])
-  )
 }

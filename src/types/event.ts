@@ -36,6 +36,8 @@ export interface EventObservation {
   lng: number | null
   magnitudeValue: number | null
   magnitudeUnit: string | null
+  /** Flood footprints and other polygon geometry, as [lat, lng] pairs for Leaflet. */
+  polygon: [number, number][] | null
 }
 
 export interface EventDetailView {
