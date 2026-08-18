@@ -45,9 +45,14 @@ export function Header() {
           <ThemeIcon variant="light" color="navy" size={32} radius="md">
             <IconWorld size={18} />
           </ThemeIcon>
-          <Text fw={700} size="md" lh={1}>
-            Atlas Watch
-          </Text>
+          <div className={classes.brandText}>
+            <Text fw={700} size="md" lh={1.15}>
+              Atlas Watch
+            </Text>
+            <Text size="xs" c="dimmed" lh={1.2} className={classes.tagline}>
+              Explore active natural events around the world
+            </Text>
+          </div>
         </Link>
 
         <nav className={classes.nav} aria-label="Primary">

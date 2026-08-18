@@ -17,6 +17,14 @@
   text-decoration: none;
 }
 
+.brandText {
+  min-width: 0;
+}
+
+.tagline {
+  display: none;
+}
+
 .brand:focus-visible {
   outline: 2px solid var(--mantine-color-navy-5);
   outline-offset: 4px;
@@ -73,6 +81,10 @@
 }
 
 @media (min-width: 36em) {
+  .tagline {
+    display: block;
+  }
+
   .link {
     padding: 0 14px;
   }

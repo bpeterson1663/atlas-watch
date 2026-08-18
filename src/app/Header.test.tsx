@@ -13,6 +13,9 @@ describe('Header', () => {
     )
 
     expect(screen.getByText('Atlas Watch')).toBeInTheDocument()
+    expect(
+      screen.getByText('Explore active natural events around the world'),
+    ).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Dashboard' })).toHaveAttribute(
       'href',
       '/',
