@@ -1,8 +1,17 @@
-import { Badge, Card, Group, Stack, Text, ThemeIcon } from '@mantine/core'
+import {
+  Badge,
+  Button,
+  Card,
+  Group,
+  Stack,
+  Text,
+  ThemeIcon,
+} from '@mantine/core'
 import type { EventView } from '../types/event'
 import { categoryStyle } from '../lib/category'
 import { IconCalendar, IconMapPin } from '@tabler/icons-react'
 import { formatUtc } from '../lib/date'
+import { Link, useLocation } from 'react-router-dom'
 
 interface Props {
   event: EventView
@@ -11,6 +20,7 @@ interface Props {
 }
 
 export function EventCard({ event, selected = false, onSelect }: Props) {
+  const location = useLocation()
   const { color, icon: Icon } = categoryStyle(event.categoryId)
 
   return (
@@ -58,6 +68,20 @@ export function EventCard({ event, selected = false, onSelect }: Props) {
             {event.categoryTitle}
           </Badge>
         </Group>
+        <Button
+          component={Link}
+          to={{
+            pathname: `/events/${encodeURIComponent(event.id)}`,
+            search: location.search,
+          }}
+          size="xs"
+          color="navy"
+          variant="filled"
+          mt={6}
+          onClick={(clickEvent) => clickEvent.stopPropagation()}
+        >
+          View details
+        </Button>
       </Stack>
     </Card>
   )

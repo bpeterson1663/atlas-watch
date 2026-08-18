@@ -38,3 +38,10 @@ export function getEvents(
 
   return apiGet<EonetEventsResponse>(`/events?${params}`, { signal })
 }
+
+export function getEvent(
+  id: string,
+  signal?: AbortSignal,
+): Promise<EonetEvent> {
+  return apiGet<EonetEvent>(`/events/${encodeURIComponent(id)}`, { signal })
+}
