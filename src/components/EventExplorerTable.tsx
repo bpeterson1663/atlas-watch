@@ -70,7 +70,6 @@ export function EventExplorerTable({ events, selectedId, onSelect }: Props) {
               <Table.Th>Category</Table.Th>
               <Table.Th>Latest Observation</Table.Th>
               <Table.Th>Status</Table.Th>
-              <Table.Th>Geometry</Table.Th>
               <Table.Th>Sources</Table.Th>
               <Table.Th>Location</Table.Th>
               <Table.Th w={40} />
@@ -128,9 +127,6 @@ export function EventExplorerTable({ events, selectedId, onSelect }: Props) {
                         {event.isOpen ? 'Active' : 'Closed'}
                       </Text>
                     </Group>
-                  </Table.Td>
-                  <Table.Td>
-                    <Text size="sm">{event.geometryCount}</Text>
                   </Table.Td>
                   <Table.Td>
                     <Text size="sm">{event.sourceCount}</Text>

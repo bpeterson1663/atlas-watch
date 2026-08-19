@@ -15,6 +15,7 @@ type EventMapProps = {
   interactive?: boolean
   selectedId?: string | null
   onSelect?: (id: string) => void
+  totalCount?: number
 }
 
 function coordinatesOf(event: EventView): [number, number] | null {
@@ -51,22 +52,27 @@ export function EventMap({
   interactive = true,
   selectedId = null,
   onSelect,
+  totalCount,
 }: EventMapProps) {
   const selected = interactive
     ? events.find((event) => event.id === selectedId)
     : undefined
+  const mapCapped =
+    !interactive && totalCount != null && totalCount > events.length
 
   return (
     <div className={mapClasses.shell}>
       {!interactive && (
-        <Badge
-          className={mapClasses.overviewLabel}
-          variant="light"
-          color="gray"
-          size="sm"
-        >
-          Map overview
-        </Badge>
+        <div className={mapClasses.overviewLabel}>
+          <Badge variant="light" color="gray" size="sm">
+            Map overview
+          </Badge>
+          {mapCapped && (
+            <Badge variant="light" color="navy" size="sm">
+              Showing {events.length} of {totalCount.toLocaleString()} locations
+            </Badge>
+          )}
+        </div>
       )}
       <MapContainer
         center={[20, 0]}

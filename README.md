@@ -57,6 +57,16 @@ src/
 
 EONET **Point** geometry is GeoJSON `[longitude, latitude]`. Some flood **Polygon** rings from GDACS are stored as `[latitude, longitude]`; `src/lib/coordinates.ts` detects that case so markers land on land, not in the ocean.
 
+## Product decisions and tradeoffs
+
+**Geographic overview first.** The dashboard is a briefing, not a research desk. A world map plus a short list answers “what’s happening where?” faster than a table of 2,000 rows. Explorer exists for people who want to filter, sort, and inspect.
+
+**History only on the event page.** Observation tracks and flood footprints are the interesting part of a single event, and they are expensive to draw at global scale. The home map shows last-known location only. Opening an event is the contract for “show me how this moved.”
+
+**Limited filters on the dashboard.** Status and time range change the briefing. Search and category belong on Explorer, where the table can absorb a narrower set. Fewer controls on home also keep the default story stable: active events in the last week.
+
+**Geometry was messier than the API docs.** Points are GeoJSON `[lng, lat]`. Some GDACS flood polygons arrive as `[lat, lng]`, which put events in the ocean or Antarctica until we inspected rings instead of trusting array order. First and latest observation are taken from geometry **sorted by date**, not from the order EONET returns the array.
+
 ## Data notes
 
 EONET events are reported by third-party sources (IRWIN, GDACS, JTWC, and others). Locations, magnitudes, and “open” vs “closed” status come from those feeds, not from this app.

@@ -100,10 +100,3 @@ export function summaryEventSubtext(
   return `${summary.openCount} open · ${summary.closedCount} closed`
 }
 
-export function summarySourceSubtext(sourceCount: number): string {
-  if (sourceCount === 0) {
-    return 'NASA EONET'
-  }
-
-  return `${sourceCount} reporting ${sourceCount === 1 ? 'source' : 'sources'}`
-}

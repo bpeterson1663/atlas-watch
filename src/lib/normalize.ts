@@ -9,7 +9,8 @@ import { latLngFromGeometry, latLngsFromPolygonRing } from './coordinates'
 import { formatLatLng } from './observation'
 
 export function normalizeEvent(event: EonetEvent): EventView {
-  const last = event.geometry[event.geometry.length - 1]
+  const geometry = sortedGeometry(event.geometry)
+  const last = geometry[geometry.length - 1]
   const point = latLngFromGeometry(last)
 
   return {
@@ -19,7 +20,7 @@ export function normalizeEvent(event: EonetEvent): EventView {
     categoryId: event.categories[0]?.id ?? 'unknown',
     categoryTitle: event.categories[0]?.title ?? 'Unknown',
     isOpen: event.closed == null,
-    firstDate: event.geometry[0]?.date ?? '',
+    firstDate: geometry[0]?.date ?? '',
     lastDate: last?.date ?? '',
     lastLat: point?.lat ?? null,
     lastLng: point?.lng ?? null,
@@ -39,7 +40,7 @@ export function normalizeEvents(events: EonetEvent[]): EventView[] {
 }
 
 export function normalizeEventDetail(event: EonetEvent): EventDetailView {
-  const observations: EventObservation[] = event.geometry
+  const observations: EventObservation[] = sortedGeometry(event.geometry)
     .map((geometry) => {
       const point = latLngFromGeometry(geometry)
       const magnitudeValue = Number.isFinite(geometry.magnitudeValue)
@@ -55,7 +56,6 @@ export function normalizeEventDetail(event: EonetEvent): EventDetailView {
         polygon: polygonFromGeometry(geometry),
       }
     })
-    .sort((a, b) => a.date.localeCompare(b.date))
 
   return {
     id: event.id,
@@ -70,6 +70,12 @@ export function normalizeEventDetail(event: EonetEvent): EventDetailView {
     sources: event.sources ?? [],
     maxMagnitude: maxMagnitude(observations),
   }
+}
+
+function sortedGeometry(geometry: EonetGeometry[] | undefined): EonetGeometry[] {
+  return [...(geometry ?? [])].sort((a, b) =>
+    (a.date ?? '').localeCompare(b.date ?? ''),
+  )
 }
 
 function placeFromTitle(title: string): string {

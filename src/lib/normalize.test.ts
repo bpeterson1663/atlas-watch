@@ -85,6 +85,22 @@ describe('normalizeEvent', () => {
     expect(view.categoryTitle).toBe('Unknown')
   })
 
+  it('uses first and last geometry dates after sorting, not array order', () => {
+    const view = normalizeEvent(
+      event({
+        geometry: [
+          point(19, -156, '2026-08-16T06:00:00Z'),
+          point(18, -155, '2026-08-14T00:00:00Z'),
+        ],
+      }),
+    )
+
+    expect(view.firstDate).toBe('2026-08-14T00:00:00Z')
+    expect(view.lastDate).toBe('2026-08-16T06:00:00Z')
+    expect(view.lastLat).toBe(19)
+    expect(view.lastLng).toBe(-156)
+  })
+
   it('falls back when there is no geometry', () => {
     const view = normalizeEvent(event({ geometry: [] }))
 

@@ -37,7 +37,7 @@ export function DashboardEventsSection({
   const mapContent = showSkeleton ? (
     <Skeleton height="100%" />
   ) : (
-    <EventMap events={mapViews} interactive={false} />
+    <EventMap events={mapViews} interactive={false} totalCount={totalCount} />
   )
 
   const listContent = showSkeleton ? (

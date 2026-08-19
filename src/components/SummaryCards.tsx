@@ -10,7 +10,7 @@ import {
 import type { ReactNode } from 'react'
 import { IconActivity, IconAntenna } from '@tabler/icons-react'
 import type { DashboardSummary } from '../lib/summary'
-import { summaryEventSubtext, summarySourceSubtext } from '../lib/summary'
+import { summaryEventSubtext } from '../lib/summary'
 import { categoryStyle } from '../lib/category'
 import type { EventFilters } from '../types/filter'
 import classes from './SummaryCards.module.css'
@@ -81,8 +81,8 @@ export function SummaryCards({ summary, filters, loading = false }: Props) {
           </div>
         }
         label="Sources"
-        value="NASA EONET"
-        detail={summarySourceSubtext(summary.sourceCount)}
+        value={String(summary.sourceCount)}
+        detail="via NASA EONET"
       />
     </SimpleGrid>
   )

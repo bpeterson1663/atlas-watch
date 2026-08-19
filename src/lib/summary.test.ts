@@ -3,7 +3,6 @@ import type { EonetEvent, EventView } from '../types/event'
 import {
   buildDashboardSummary,
   summaryEventSubtext,
-  summarySourceSubtext,
 } from './summary'
 
 function view(overrides: Partial<EventView> = {}): EventView {
@@ -97,11 +96,5 @@ describe('summaryEventSubtext', () => {
         { days: 7, status: 'all' },
       ),
     ).toBe('1 open · 2 closed')
-  })
-})
-
-describe('summarySourceSubtext', () => {
-  it('names NASA EONET when there are no sources', () => {
-    expect(summarySourceSubtext(0)).toBe('NASA EONET')
   })
 })
