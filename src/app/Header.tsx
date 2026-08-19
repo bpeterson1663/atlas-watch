@@ -1,6 +1,7 @@
 import { Box, Group, Text, ThemeIcon } from '@mantine/core'
 import { IconWorld } from '@tabler/icons-react'
 import { Link, useLocation } from 'react-router-dom'
+import { AboutThisData } from '../components/AboutThisData'
 import layout from '../styles/layout.module.css'
 import classes from './Header.module.css'
 
@@ -55,15 +56,18 @@ export function Header() {
           </div>
         </Link>
 
-        <nav className={classes.nav} aria-label="Primary">
-          <HeaderNavLink to="/" label="Dashboard" matchPath="/" />
-          <HeaderNavLink
-            to="/explorer"
-            label="Event Explorer"
-            shortLabel="Explorer"
-            matchPath="/explorer"
-          />
-        </nav>
+        <Group gap="xs" wrap="nowrap">
+          <nav className={classes.nav} aria-label="Primary">
+            <HeaderNavLink to="/" label="Dashboard" matchPath="/" />
+            <HeaderNavLink
+              to="/explorer"
+              label="Event Explorer"
+              shortLabel="Explorer"
+              matchPath="/explorer"
+            />
+          </nav>
+          <AboutThisData />
+        </Group>
       </Group>
     </Box>
   )

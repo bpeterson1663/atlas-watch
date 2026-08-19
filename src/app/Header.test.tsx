@@ -23,5 +23,8 @@ describe('Header', () => {
     expect(
       screen.getByRole('link', { name: 'Event Explorer' }),
     ).toHaveAttribute('href', '/explorer')
+    expect(
+      screen.getByRole('button', { name: 'About this data' }),
+    ).toBeInTheDocument()
   })
 })

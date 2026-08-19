@@ -1,0 +1,23 @@
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  color: var(--mantine-color-gray-7);
+  font-size: var(--mantine-font-size-xs);
+  font-weight: 500;
+}
+
+.trigger:hover {
+  color: var(--mantine-color-navy-6);
+}
+
+.label {
+  display: none;
+}
+
+@media (min-width: 36em) {
+  .label {
+    display: inline;
+  }
+}
