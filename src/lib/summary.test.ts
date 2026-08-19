@@ -1,9 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { EonetEvent, EventView } from '../types/event'
-import {
-  buildDashboardSummary,
-  summaryEventSubtext,
-} from './summary'
+import { buildDashboardSummary, summaryEventSubtext } from './summary'
 
 function view(overrides: Partial<EventView> = {}): EventView {
   return {

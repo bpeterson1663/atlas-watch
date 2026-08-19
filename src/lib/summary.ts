@@ -99,4 +99,3 @@ export function summaryEventSubtext(
 
   return `${summary.openCount} open · ${summary.closedCount} closed`
 }
-

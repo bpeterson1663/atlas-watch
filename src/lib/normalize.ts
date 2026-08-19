@@ -40,8 +40,8 @@ export function normalizeEvents(events: EonetEvent[]): EventView[] {
 }
 
 export function normalizeEventDetail(event: EonetEvent): EventDetailView {
-  const observations: EventObservation[] = sortedGeometry(event.geometry)
-    .map((geometry) => {
+  const observations: EventObservation[] = sortedGeometry(event.geometry).map(
+    (geometry) => {
       const point = latLngFromGeometry(geometry)
       const magnitudeValue = Number.isFinite(geometry.magnitudeValue)
         ? geometry.magnitudeValue
@@ -55,7 +55,8 @@ export function normalizeEventDetail(event: EonetEvent): EventDetailView {
         magnitudeUnit: geometry.magnitudeUnit,
         polygon: polygonFromGeometry(geometry),
       }
-    })
+    },
+  )
 
   return {
     id: event.id,
@@ -72,7 +73,9 @@ export function normalizeEventDetail(event: EonetEvent): EventDetailView {
   }
 }
 
-function sortedGeometry(geometry: EonetGeometry[] | undefined): EonetGeometry[] {
+function sortedGeometry(
+  geometry: EonetGeometry[] | undefined,
+): EonetGeometry[] {
   return [...(geometry ?? [])].sort((a, b) =>
     (a.date ?? '').localeCompare(b.date ?? ''),
   )

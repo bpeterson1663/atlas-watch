@@ -8,15 +8,29 @@ import {
   Table,
   Text,
   ThemeIcon,
+  UnstyledButton,
 } from '@mantine/core'
-import { IconDotsVertical } from '@tabler/icons-react'
-import { useEffect, useMemo, useState } from 'react'
+import {
+  IconChevronDown,
+  IconChevronUp,
+  IconDotsVertical,
+  IconSelector,
+} from '@tabler/icons-react'
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import type { EventView } from '../types/event'
 import { categoryStyle } from '../lib/category'
 import { formatUtc } from '../lib/date'
 import { EXPLORER_PAGE_SIZE } from '../lib/constants'
 import classes from './EventExplorerTable.module.css'
+
+type SortKey =
+  | 'title'
+  | 'categoryTitle'
+  | 'lastDate'
+  | 'status'
+  | 'sourceCount'
+  | 'locationLabel'
 
 interface Props {
   events: EventView[]
@@ -27,22 +41,42 @@ interface Props {
 export function EventExplorerTable({ events, selectedId, onSelect }: Props) {
   const location = useLocation()
   const [page, setPage] = useState(1)
+  const [sortBy, setSortBy] = useState<SortKey>('lastDate')
+  const [reversed, setReversed] = useState(true)
 
   useEffect(() => {
     setPage(1)
   }, [events])
 
-  const totalPages = Math.max(1, Math.ceil(events.length / EXPLORER_PAGE_SIZE))
+  const sortedEvents = useMemo(
+    () => sortEvents(events, sortBy, reversed),
+    [events, reversed, sortBy],
+  )
+
+  const totalPages = Math.max(
+    1,
+    Math.ceil(sortedEvents.length / EXPLORER_PAGE_SIZE),
+  )
 
   const pageEvents = useMemo(() => {
     const safePage = Math.min(page, totalPages)
     const start = (safePage - 1) * EXPLORER_PAGE_SIZE
-    return events.slice(start, start + EXPLORER_PAGE_SIZE)
-  }, [events, page, totalPages])
+    return sortedEvents.slice(start, start + EXPLORER_PAGE_SIZE)
+  }, [page, sortedEvents, totalPages])
 
   const rangeStart =
-    events.length === 0 ? 0 : (page - 1) * EXPLORER_PAGE_SIZE + 1
-  const rangeEnd = Math.min(page * EXPLORER_PAGE_SIZE, events.length)
+    sortedEvents.length === 0 ? 0 : (page - 1) * EXPLORER_PAGE_SIZE + 1
+  const rangeEnd = Math.min(page * EXPLORER_PAGE_SIZE, sortedEvents.length)
+
+  function toggleSort(key: SortKey) {
+    setPage(1)
+    if (sortBy === key) {
+      setReversed((current) => !current)
+      return
+    }
+    setSortBy(key)
+    setReversed(false)
+  }
 
   return (
     <Stack gap="sm" flex={1} mih={0}>
@@ -54,7 +88,7 @@ export function EventExplorerTable({ events, selectedId, onSelect }: Props) {
       >
         <Group gap="md" wrap="wrap">
           <Text size="sm" fw={600}>
-            {events.length.toLocaleString()} events found
+            {sortedEvents.length.toLocaleString()} events found
           </Text>
           <Text size="xs" c="dimmed">
             All times in UTC
@@ -66,12 +100,48 @@ export function EventExplorerTable({ events, selectedId, onSelect }: Props) {
         <Table highlightOnHover stickyHeader verticalSpacing="sm">
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>Event Name</Table.Th>
-              <Table.Th>Category</Table.Th>
-              <Table.Th>Latest Observation</Table.Th>
-              <Table.Th>Status</Table.Th>
-              <Table.Th>Sources</Table.Th>
-              <Table.Th>Location</Table.Th>
+              <SortableTh
+                sorted={sortBy === 'title'}
+                reversed={reversed}
+                onSort={() => toggleSort('title')}
+              >
+                Event Name
+              </SortableTh>
+              <SortableTh
+                sorted={sortBy === 'categoryTitle'}
+                reversed={reversed}
+                onSort={() => toggleSort('categoryTitle')}
+              >
+                Category
+              </SortableTh>
+              <SortableTh
+                sorted={sortBy === 'lastDate'}
+                reversed={reversed}
+                onSort={() => toggleSort('lastDate')}
+              >
+                Latest Observation
+              </SortableTh>
+              <SortableTh
+                sorted={sortBy === 'status'}
+                reversed={reversed}
+                onSort={() => toggleSort('status')}
+              >
+                Status
+              </SortableTh>
+              <SortableTh
+                sorted={sortBy === 'sourceCount'}
+                reversed={reversed}
+                onSort={() => toggleSort('sourceCount')}
+              >
+                Sources
+              </SortableTh>
+              <SortableTh
+                sorted={sortBy === 'locationLabel'}
+                reversed={reversed}
+                onSort={() => toggleSort('locationLabel')}
+              >
+                Location
+              </SortableTh>
               <Table.Th w={40} />
             </Table.Tr>
           </Table.Thead>
@@ -180,7 +250,7 @@ export function EventExplorerTable({ events, selectedId, onSelect }: Props) {
         </Text>
         <Group gap="md" wrap="wrap">
           <Text size="sm" c="dimmed">
-            {rangeStart}-{rangeEnd} of {events.length.toLocaleString()}
+            {rangeStart}-{rangeEnd} of {sortedEvents.length.toLocaleString()}
           </Text>
           <Pagination
             total={totalPages}
@@ -192,4 +262,69 @@ export function EventExplorerTable({ events, selectedId, onSelect }: Props) {
       </Group>
     </Stack>
   )
+}
+
+function SortableTh({
+  children,
+  sorted,
+  reversed,
+  onSort,
+}: {
+  children: ReactNode
+  sorted: boolean
+  reversed: boolean
+  onSort: () => void
+}) {
+  const Icon = sorted
+    ? reversed
+      ? IconChevronDown
+      : IconChevronUp
+    : IconSelector
+
+  return (
+    <Table.Th
+      className={classes.sortTh}
+      aria-sort={sorted ? (reversed ? 'descending' : 'ascending') : 'none'}
+    >
+      <UnstyledButton className={classes.sortControl} onClick={onSort}>
+        <Group gap={6} wrap="nowrap" justify="space-between">
+          <span>{children}</span>
+          <Icon size={14} stroke={1.5} aria-hidden />
+        </Group>
+      </UnstyledButton>
+    </Table.Th>
+  )
+}
+
+function sortEvents(
+  events: EventView[],
+  sortBy: SortKey,
+  reversed: boolean,
+): EventView[] {
+  return [...events].sort((a, b) => {
+    const result = compareEvents(a, b, sortBy)
+    const directed = reversed ? -result : result
+    return directed !== 0 ? directed : a.id.localeCompare(b.id)
+  })
+}
+
+function compareEvents(a: EventView, b: EventView, sortBy: SortKey): number {
+  switch (sortBy) {
+    case 'title':
+      return a.title.localeCompare(b.title)
+    case 'categoryTitle':
+      return a.categoryTitle.localeCompare(b.categoryTitle)
+    case 'lastDate':
+      return a.lastDate.localeCompare(b.lastDate)
+    case 'status':
+      return statusLabel(a).localeCompare(statusLabel(b))
+    case 'sourceCount':
+      return a.sourceCount - b.sourceCount
+    case 'locationLabel':
+      return a.locationLabel.localeCompare(b.locationLabel)
+  }
+}
+
+function statusLabel(event: EventView): string {
+  return event.isOpen ? 'Active' : 'Closed'
 }
